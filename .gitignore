@@ -1,5 +1,6 @@
 ecoli_simulation
 *.pyc
+*.bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

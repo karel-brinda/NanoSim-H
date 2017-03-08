@@ -17,16 +17,10 @@ import os
 import re
 import argparse
 import progressbar
+import numpy as np
+
 from time import strftime
-try:
-	test_xrange=xrange(42)
-except NameError:
-	from six.moves import xrange
-try:
-	import numpy as np
-except ImportError:
-	sys.exit("""You need numpy!
-				install it from http://www.numpy.org/""")
+
 from .mixed_models import *
 from .misc import *
 
@@ -77,7 +71,7 @@ def read_ecdf(profile):
 		new = line.strip().split('\t')
 		ratio = [float(x) for x in new[0].split('-')]
 		prob = [float(x) for x in new[1:]]
-		for i in xrange(lanes):
+		for i in range(lanes):
 			if prob[i] == l_prob[i]:
 				continue
 			else:
@@ -89,7 +83,7 @@ def read_ecdf(profile):
 				l_ratio[i] = ratio[1]
 				l_prob[i] = prob[i]
 
-	for i in xrange(0, len(ecdf_key)):
+	for i in range(0, len(ecdf_key)):
 		last_key = sorted(ecdf_dict[ecdf_key[i]].keys())[-1]
 		last_value = ecdf_dict[ecdf_key[i]][last_key]
 		ecdf_dict[ecdf_key[i]][last_key] = (last_value[0], ratio[1])
@@ -102,7 +96,7 @@ def get_length(len_dict, num, max_l, min_l):
 	assert min_l <= max_l
 
 	length_list = []
-	for i in xrange(num):
+	for i in range(num):
 		middle_ref = 0
 		key = tuple(len_dict.keys())[0]
 		while middle_ref < min_l or middle_ref > max_l:
@@ -330,7 +324,7 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 		ref_length = get_length(aligned_dict, number_aligned, max_l, min_l)
 		del aligned_dict
 
-		for i in xrange(number_aligned):
+		for i in range(number_aligned):
 			new_read, (chrom, pos) = extract_read(dna_type, ref_length[i])
 			new_read_name="{}_{}".format(chrom, pos)
 
@@ -680,7 +674,7 @@ def mutate_read(read, read_name, error_log, e_dict, k, aligned=True):
 			ref_base = read[key: key + val[1]]
 			while True:
 				new_bases = ""
-				for i in xrange(val[1]):
+				for i in range(val[1]):
 					tmp_bases = list(BASES)
 					tmp_bases.remove(read[key + i])
 					new_base = random.choice(tmp_bases)
@@ -699,7 +693,7 @@ def mutate_read(read, read_name, error_log, e_dict, k, aligned=True):
 			ref_base = val[1] * "-"
 			while True:
 				new_bases = ""
-				for i in xrange(val[1]):
+				for i in range(val[1]):
 					new_base = random.choice(BASES)
 					new_bases += new_base
 				check_kmer = read[max(key - k + 1, 0): key] + new_bases + read[key: key + k - 1]
@@ -731,7 +725,7 @@ def case_convert(s_dict):
 
 	for k, v in s_dict.items():
 		up_string = v.upper()
-		for i in xrange(len(up_string)):
+		for i in range(len(up_string)):
 			if up_string[i] in base_code:
 				up_string = up_string[:i] + random.choice(base_code[up_string[i]]) + up_string[i+1:]
 		out_dict[k] = up_string

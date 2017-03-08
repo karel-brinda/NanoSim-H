@@ -30,7 +30,6 @@ before_install:
 - pip install .
 install:
 - make -j -C last CXX=/usr/bin/g++-4.8
-- pip install six
 before_script:
 - d=`pwd`
 - export PATH=$PATH:$d/last/src

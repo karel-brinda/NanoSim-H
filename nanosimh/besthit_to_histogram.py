@@ -3,16 +3,10 @@
 from __future__ import with_statement
 import numpy
 
-try:
-	from six.moves import xrange
-except ImportError:
-	pass
-
-
 def add_dict(error, dic):
 	if error not in dic:
 		last_element = len(dic)
-		for i in xrange(last_element, error + 1):
+		for i in range(last_element, error + 1):
 			dic[i] = 0
 	dic[error] += 1
 
@@ -22,12 +16,12 @@ def add_match(prev, succ, match_list):
 	expand = max(prev, succ) + 1
 	if expand > len(match_list):
 		last_element = len(match_list)
-		for i in xrange(0, last_element):
-			for j in xrange(last_element, expand):
+		for i in range(0, last_element):
+			for j in range(last_element, expand):
 				match_list[i][j] = 0
-		for i in xrange(last_element, expand):
+		for i in range(last_element, expand):
 			match_list[i] = {}
-			for j in xrange(0, expand):
+			for j in range(0, expand):
 				match_list[i][j] = 0
 
 	match_list[prev][succ] += 1
@@ -54,17 +48,17 @@ def hist(outfile):
 				  "del0/mis": 0, "del0/ins": 0, "del0/del": 0, "ins0/mis": 0, "ins0/ins": 0, "ins0/del": 0}
 	first_error = {"mis": 0, "ins": 0, "del": 0}
 
-	for x in xrange(0, 150):
+	for x in range(0, 150):
 		dic_match[x] = 0
 		match_list[x] = {}
-		for y in xrange(0, 150):
+		for y in range(0, 150):
 			match_list[x][y] = 0
 		for key in match_bin.keys():
 			match_bin[key][x] = 0
-	for x in xrange(0, 150):
+	for x in range(0, 150):
 		dic_first_match[x] = 0
 
-	for x in xrange(0, 30):
+	for x in range(0, 30):
 		dic_mis[x] = 0
 		dic_ins[x] = 0
 		dic_del[x] = 0
@@ -83,7 +77,7 @@ def hist(outfile):
 			mismatch = 0
 			ins = 0
 			dele = 0
-			for i in xrange(0, len(ref)):
+			for i in range(0, len(ref)):
 				if ref[i] == query[i]:
 					if mismatch != 0:
 						add_dict(mismatch, dic_mis)
@@ -251,7 +245,7 @@ def hist(outfile):
 		if k_of_match_list >= len(match_list):
 			break
 		match_bin[k_of_bin] = {}
-		for i in xrange(0, len(match_list)):
+		for i in range(0, len(match_list)):
 			match_bin[k_of_bin][i] = 0
 		tmp_count = 0
 		while tmp_count < bin_size and k_of_match_list < len(match_list):
@@ -261,8 +255,8 @@ def hist(outfile):
 			else:
 				tmp_count += new_added
 				k_of_match_list += 1
-		for k1 in xrange(last_k, k_of_match_list):
-			for k2 in xrange(0, len(match_list[k1])):
+		for k1 in range(last_k, k_of_match_list):
+			for k2 in range(0, len(match_list[k1])):
 				match_bin[k_of_bin][k2] += match_list[k1][k2]
 
 		count_each_bin[k_of_bin] = [(last_k, k_of_match_list), tmp_count]
@@ -271,15 +265,15 @@ def hist(outfile):
 
 	if k_of_match_list < len(match_list):
 		tmp_count = 0
-		for k1 in xrange(last_k, len(match_list)):
+		for k1 in range(last_k, len(match_list)):
 			tmp_count += sum(match_list[k1].values())
-			for k2 in xrange(0, len(match_list)):
+			for k2 in range(0, len(match_list)):
 				match_bin[k_of_bin - 1][k2] += match_list[k1][k2]
 		count_each_bin[k_of_bin - 1][1] += tmp_count
 
 	count_prob = [0] * len(match_bin)
 	out2.write("bins\t" + "\t".join("%s-%s" % tup[0] for tup in count_each_bin.values()) + '\n')
-	for i in xrange(0, len(match_list)):
+	for i in range(0, len(match_list)):
 		out2.write(str(i) + "-" + str(i + 1))
 		for k_of_bin in match_bin:
 			if count_each_bin[k_of_bin][1] == 0:
@@ -295,7 +289,7 @@ def hist(outfile):
 	out3.write("bin\t0-50000\n")
 	count_prob = 0
 	total_first_match = sum(dic_first_match.values())
-	for i in xrange(0, len(dic_first_match)):
+	for i in range(0, len(dic_first_match)):
 		count_prob += dic_first_match[i] * 1.0 / total_first_match
 		out3.write(str(i) + "-" + str(i + 1) + "\t" + str(count_prob) + '\n')
 
