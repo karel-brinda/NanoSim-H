@@ -7,6 +7,9 @@ NanoSimH
 .. image:: https://badge.fury.io/py/NanoSimH.svg
 	:target: https://badge.fury.io/py/NanoSimH
 
+.. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
+	:target: http://bioconda.github.io/recipes/nanosimh/README.html
+
 NanoSimH is a modified version of `NanoSim`_, a fast and scalable read simulator that captures the technology-specific features of ONT data, and allows for adjustments upon improvement of nanopore sequencing technology. It has been created as a fork of NanoSim 1.0.1. The main improvements compared to `NanoSim`_ are the following:
 
 * Support for Python 3
