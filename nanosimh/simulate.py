@@ -25,12 +25,15 @@ from time import strftime
 from .mixed_models import *
 from .misc import *
 
+
 BASES = ['A', 'T', 'C', 'G']
 
 FASTA_LINE_WIDTH=60
 
 # package directory
 PD=os.path.dirname(os.path.realpath(__file__))
+
+DEFAULT_PROFILE='ecoli_R9_2D'
 
 DEFAULT_PROFILES_DIR=os.path.join(PD,"profiles")
 glob.glob(DEFAULT_PROFILES_DIR+"*/")
@@ -749,7 +752,7 @@ def case_convert(s_dict):
 
 def main():
 	ref = ""
-	model_dir = "ecoli"
+	model_dir = DEFAULT_PROFILE
 	out = "simulated"
 	number = 20000
 	perfect = False
@@ -764,13 +767,13 @@ def main():
 
 	description="""\
 			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
+			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
 	"""
 
 	parser = argparse.ArgumentParser(
 			formatter_class=argparse.RawDescriptionHelpFormatter,description=textwrap.dedent(description),
-			epilog='Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.',
+			epilog='Notice: the use of `max-len` and `min-len` will affect the read length distributions. If the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.',
 		)
 
 	parser.add_argument('ref',
@@ -782,7 +785,7 @@ def main():
 			type=str,
 			metavar='str',
 			dest='model_dir',
-			help='error profile - one of precomputed profiles ({}) or a user-specified directory with a profile [{}]'.format(
+			help='error profile - one of precomputed profiles ({}) or an directory with an error profile [{}]'.format(
 					", ".join(["'{}'".format(x) for x in DEFAULT_PROFILES]),
 					model_dir,
 				),

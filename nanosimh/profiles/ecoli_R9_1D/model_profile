@@ -1,0 +1,4 @@
+Type	lambda	k	prob	weight
+mismatch	0.1674	0	0.706	0.1489
+insertion	1.27900000000002	1.5192	0.5292	0.523299999999997
+deletion	1.264	1.2805	0.46	0.564

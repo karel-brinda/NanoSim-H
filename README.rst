@@ -38,13 +38,14 @@ The main improvements compared to NanoSim are:
 Installation
 ------------
 
-**From `BioConda <https://bioconda.github.io/>`_ (recommended):**
+**From** `BioConda <https://bioconda.github.io/>`_ **(recommended):**
+
 
 .. code-block:: bash
 
 	conda install -y -c bioconda nanosim-h
 
-**From `PyPI <https://pypi.python.org/pypi>`_:**
+**From** `PyPI <https://pypi.python.org/pypi>`_**:**
 
 .. code-block:: bash
 
