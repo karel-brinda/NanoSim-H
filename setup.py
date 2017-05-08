@@ -18,19 +18,22 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 	long_description = f.read()
 
+# Get the current version
+exec(open("nanosimh/version.py").read())
+
 setup(
-	name='NanoSimH',
+	name='NanoSim-H',
 
 	# Versions should comply with PEP440.  For a discussion on single-sourcing
 	# the version across setup.py and the project code, see
 	# https://packaging.python.org/en/latest/single_source_version.html
-	version='1.0.1.9',
+	version=VERSION,
 
 	#description='A sample Python project',
 	long_description=long_description,
 
 	# The project's main homepage.
-	url='https://github.com/karel-brinda/nanosimh',
+	url='https://github.com/karel-brinda/nanosim-h',
 
 	# Author details
 	#author='The Python Packaging Authority',
@@ -45,7 +48,7 @@ setup(
 		#   3 - Alpha
 		#   4 - Beta
 		#   5 - Production/Stable
-		'Development Status :: 3 - Alpha',
+		'Development Status :: 3 - Beta',
 
 		# Indicate who your project is intended for
 		'Intended Audience :: Developers',
@@ -110,7 +113,7 @@ setup(
 	entry_points={
 		'console_scripts': [
 			'nanosimh_train=nanosimh:nanosim_train',
-			'nanosimh_simulate=nanosimh:nanosim_simulate',
+			'nanosimh=nanosimh:nanosim_simulate',
 		],
 	},
 
