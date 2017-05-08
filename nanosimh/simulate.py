@@ -10,6 +10,7 @@ This script generates simulated Oxford Nanopore 2D reads.
 from __future__ import print_function
 from __future__ import with_statement
 import argparse
+import textwrap
 import sys
 import random
 import os
@@ -17,6 +18,7 @@ import re
 import argparse
 import progressbar
 import numpy
+import glob
 
 from time import strftime
 
@@ -31,6 +33,11 @@ FASTA_LINE_WIDTH=60
 PD=os.path.dirname(os.path.realpath(__file__))
 
 DEFAULT_PROFILES_DIR=os.path.join(PD,"profiles")
+glob.glob(DEFAULT_PROFILES_DIR+"*/")
+DEFAULT_PROFILES_ABS=glob.glob(DEFAULT_PROFILES_DIR+"/*/")
+DEFAULT_PROFILES=[
+	x.replace(os.path.abspath(DEFAULT_PROFILES_DIR),"")[1:-1] for x in DEFAULT_PROFILES_ABS
+]
 
 MODEL_FILES=[
 		"align_ratio",
@@ -764,10 +771,16 @@ def main():
 	max_readlength = float("inf")
 	min_readlength = 50
 	kmer_bias = 6
-	seed = 1
+	seed = 42
+
+	description="""\
+			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
+			Author:   Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
+			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
+	"""
 
 	parser = argparse.ArgumentParser(
-			description='NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.',
+			formatter_class=argparse.RawDescriptionHelpFormatter,description=textwrap.dedent(description),
 			epilog='Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.',
 		)
 
@@ -780,7 +793,10 @@ def main():
 			type=str,
 			metavar='str',
 			dest='model_dir',
-			help='directory with profile [{}]'.format(model_dir),
+			help='error profile - one of precomputed profiles ({}) or a user-specified directory with a profile [{}]'.format(
+					", ".join(["'{}'".format(x) for x in DEFAULT_PROFILES]),
+					model_dir,
+				),
 			default=model_dir,
 		)
 	parser.add_argument('-o','--out-pref',

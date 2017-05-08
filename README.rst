@@ -1,16 +1,16 @@
 NanoSimH
 ========
 
-.. image:: https://travis-ci.org/karel-brinda/NanoSimH.svg?branch=master
-	:target: https://travis-ci.org/karel-brinda/NanoSimH
+.. image:: https://travis-ci.org/karel-brinda/NanoSim-H.svg?branch=master
+	:target: https://travis-ci.org/karel-brinda/NanoSim-H
 
 .. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
-	:target: https://anaconda.org/bioconda/nanosimh
+	:target: https://anaconda.org/bioconda/nanosim-h
 
-.. image:: https://badge.fury.io/py/NanoSimH.svg
-	:target: https://badge.fury.io/py/NanoSimH
+.. image:: https://badge.fury.io/py/NanoSim-H.svg
+	:target: https://badge.fury.io/py/NanoSim-H
 
-NanoSimH is a modified version of `NanoSim`_, a read simulator that captures the technology-specific features of ONT data, and allows for adjustments upon improvement of nanopore sequencing technology. It has been created as a fork of NanoSim 1.0.1. The main improvements compared to `NanoSim`_ are the following:
+NanoSim-H is a modified version of `NanoSim`_, a read simulator that captures the technology-specific features of ONT data, and allows for adjustments upon improvement of nanopore sequencing technology. It has been created as a fork of NanoSim 1.0.1. The main improvements compared to `NanoSim`_ are the following:
 
 * Support for Python 3
 * Support for `RNF`_ read names
@@ -32,28 +32,28 @@ Installation
 
 .. code-block:: bash
 
-	conda install -y  -c bioconda nanosimh
+	conda install -y  -c bioconda nanosim-h
 
 **From PyPI**
 
 .. code-block:: bash
 
-	pip install --upgrade nanosimh
+	pip install --upgrade nanosim-h
 
 **From git**
 
 .. code-block:: bash
 
-		git clone https://github.com/karel-brinda/nanosimh
-		cd nanosimh
+		git clone https://github.com/karel-brinda/nanosim-h
+		cd nanosim0h
 		pip install --upgrade .
 
 or
 
 .. code-block:: bash
 
-		git clone https://github.com/karel-brinda/nanosimh
-		cd nanosimh
+		git clone https://github.com/karel-brinda/nanosim-h
+		cd nanosim-h
 		python setup.py install
 
 
@@ -110,21 +110,25 @@ Simulation stage takes reference genome and read profiles as input and outputs s
 
 .. code-block::
 
-	$ nanosimh_simulate --help
-	usage: nanosimh_simulate [-h] -r str [-p str] [-o str] [-n int] [-m float]
-	                         [-i float] [-d float] [-s int] [--circular]
-	                         [--perfect] [--merge-contigs] [--rnf]
-	                         [--rnf-add-cigar] [--max-len int] [--min-len int]
-	                         [--kmer-bias int]
+	$ nanosim-h -h
+	usage: nanosim-h [-h] [-p str] [-o str] [-n int] [-m float] [-i float]
+	                 [-d float] [-s int] [--circular] [--perfect]
+	                 [--merge-contigs] [--rnf] [--rnf-add-cigar] [--max-len int]
+	                 [--min-len int] [--kmer-bias int]
+	                 <reference.fa>
 
-	NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.
+	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
+	Author:   Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
+	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
+
+	positional arguments:
+	  <reference.fa>        reference genome in fasta file
 
 	optional arguments:
 	  -h, --help            show this help message and exit
-	  -r str, --reference str
-	                        reference genome in fasta file
 	  -p str, --profile str
-	                        prefix of training set profiles [training]
+	                        error profile - one of precomputed profiles ('ecoli')
+	                        or a user-specified directory with a profile [ecoli]
 	  -o str, --out-pref str
 	                        prefix of output file [simulated]
 	  -n int, --number int  number of generated reads [20000]
@@ -135,20 +139,18 @@ Simulation stage takes reference genome and read profiles as input and outputs s
 	  -d float, --del-rate float
 	                        deletion reate (weight tuning) [1.0]
 	  -s int, --seed int    initial seed for the pseudorandom number generator (0
-	                        for random) [1]
+	                        for random) [42]
 	  --circular            circular simulation (linear otherwise)
 	  --perfect             output perfect reads, no mutations
 	  --merge-contigs       merge contigs from the reference
 	  --rnf                 use RNF format for read names
-	  --rnf-add-cigar       add cigar to RNF names
+	  --rnf-add-cigar       add cigar to RNF names (not fully debugged, yet)
 	  --max-len int         maximum read length [inf]
 	  --min-len int         minimum read length [50]
 	  --kmer-bias int       prohibits homopolymers with length >= n bases in
 	                        output reads [6]
 
-	Notice: the use of `max_len` and `min_len` will affect the read length
-	distributions. If the range between `max_len` and `min_len` is too small, the
-	program will run slowlier accordingly.  
+	Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.
 
 **For example:**
 

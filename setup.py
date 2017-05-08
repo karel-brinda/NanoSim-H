@@ -113,8 +113,8 @@ setup(
 	# pip to create the appropriate form of executable for the target platform.
 	entry_points={
 		'console_scripts': [
-			'nanosimh_train=nanosimh:nanosimh_train',
-			'nanosimh=nanosimh:nanosimh_simulate',
+			'nanosim-h_train=nanosimh:nanosimh_train',
+			'nanosim-h=nanosimh:nanosimh_simulate',
 		],
 	},
 )
