@@ -112,7 +112,7 @@ def get_length(len_dict, num, max_l, min_l):
 	return length_list
 
 
-def read_profile(number, model_prefix, per, max_l, min_l):
+def read_profile(number, model_dir, per, max_l, min_l):
 	global unaligned_length, number_aligned, aligned_dict
 	global match_ht_list, align_ratio, ht_dict, error_par
 	global trans_error_pr, match_markov_model
@@ -120,7 +120,7 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 	# Read model profile for match, mismatch, insertion and deletions
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read error profile\n")
 	error_par = {}
-	model_profile = model_prefix + "_model_profile"
+	model_profile = os.path.join(model_dir, "model_profile")
 	assert_file_exists(model_profile, True)
 	with open(model_profile, 'r') as mod_profile:
 		mod_profile.readline()
@@ -134,7 +134,7 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 				error_par["del"] = [float(x) for x in new_line[1:]]
 
 	trans_error_pr = {}
-	error_markov_fn=model_prefix + "_error_markov_model"
+	error_markov_fn=os.path.join(model_dir, "error_markov_model")
 	assert_file_exists(error_markov_fn, True)
 	with open(error_markov_fn, "r") as error_markov:
 		error_markov.readline()
@@ -146,12 +146,12 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 			trans_error_pr[k][(float(info[1]), float(info[1]) + float(info[2]))] = "ins"
 			trans_error_pr[k][(1 - float(info[3]), 1)] = "del"
 
-	first_match_fn=model_prefix + "_first_match.hist"
+	first_match_fn=os.path.join(model_dir, "first_match.hist")
 	assert_file_exists(first_match_fn, True)
 	with open(first_match_fn, 'r') as fm_profile:
 		match_ht_list = read_ecdf(fm_profile)
 
-	match_markov_fn=model_prefix + "_match_markov_model"
+	match_markov_fn=os.path.join(model_dir, "match_markov_model")
 	assert_file_exists(match_markov_fn, True)
 	with open(match_markov_fn, 'r') as mm_profile:
 		match_markov_model = read_ecdf(mm_profile)
@@ -159,7 +159,7 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 	# Read length of unaligned reads
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read ECDF of unaligned reads\n")
 	unaligned_length = []
-	unaligned_length_fn=model_prefix + "_unaligned_length_ecdf"
+	unaligned_length_fn=os.path.join(model_dir,"unaligned_length_ecdf")
 	assert_file_exists(unaligned_length_fn, True)
 	with open(unaligned_length_fn, 'r') as u_profile:
 		new = u_profile.readline().strip()
@@ -179,13 +179,13 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read ECDF of aligned reads\n")
 
 	# Read align ratio profile
-	align_ratio_fn=model_prefix + "_align_ratio"
+	align_ratio_fn=os.path.join(model_dir, "align_ratio")
 	assert_file_exists(align_ratio_fn, True)
 	with open(align_ratio_fn, 'r') as a_profile:
 		align_ratio = read_ecdf(a_profile)
 
 	# Read head/unaligned region ratio
-	ht_ratio_fn=model_prefix + "_ht_ratio"
+	ht_ratio_fn=os.path.join(model_dir,"ht_ratio")
 	assert_file_exists(ht_ratio_fn, True)
 	with open(ht_ratio_fn, 'r') as ht_profile:
 		ht_dict = read_ecdf(ht_profile)
@@ -193,9 +193,9 @@ def read_profile(number, model_prefix, per, max_l, min_l):
 	# Read length of aligned reads
 	# If "perfect" is chosen, just use the total length ecdf profile, else use the length of aligned region on reference
 	if per:
-		length_profile = model_prefix + "_aligned_reads_ecdf"
+		length_profile = os.path.join(model_dir,"aligned_reads_ecdf")
 	else:
-		length_profile = model_prefix + "_aligned_length_ecdf"
+		length_profile = os.path.join(model_dir,"aligned_length_ecdf")
 
 	assert_file_exists(length_profile, True)
 	with open(length_profile, 'r') as align_profile:
@@ -735,7 +735,7 @@ def case_convert(s_dict):
 
 def main():
 	ref = ""
-	model_prefix = "training"
+	model_dir = "training"
 	out = "simulated"
 	number = 20000
 	perfect = False
@@ -753,19 +753,17 @@ def main():
 			epilog='Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.',
 		)
 
-	parser.add_argument('-r','--reference',
+	parser.add_argument('ref',
 			type=str,
-			metavar='str',
-			required=True,
-			dest='ref',
+			metavar='<reference.fa>',
 			help='reference genome in fasta file',
 		)
 	parser.add_argument('-p','--profile',
 			type=str,
 			metavar='str',
-			dest='model_prefix',
-			help='prefix of training set profiles [{}]'.format(model_prefix),
-			default=model_prefix,
+			dest='model_dir',
+			help='directory with profile [{}]'.format(model_dir),
+			default=model_dir,
 		)
 	parser.add_argument('-o','--out-pref',
 			type=str,
@@ -859,7 +857,7 @@ def main():
 	args = parser.parse_args()
 
 	ref = args.ref
-	model_prefix = args.model_prefix
+	model_dir = args.model_dir
 	out = args.out
 	number = args.number
 	perfect = args.perfect
@@ -900,7 +898,7 @@ def main():
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ': ' + ' '.join(sys.argv) + '\n')
 
 	# Read in reference genome and generate simulated reads
-	read_profile(number, model_prefix, perfect, max_readlength, min_readlength)
+	read_profile(number, model_dir, perfect, max_readlength, min_readlength)
 
 	simulation(
 			ref=ref,
