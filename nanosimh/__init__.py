@@ -4,8 +4,8 @@ from .mixed_models import *
 
 import sys
 
-def nanosim_simulate():
+def nanosimh_simulate():
 	simulate.main()
 
-def nanosim_train():
+def nanosimh_train():
 	train.main()
