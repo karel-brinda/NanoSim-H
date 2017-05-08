@@ -186,7 +186,12 @@ Characterization stage takes a reference and a training read set in FASTA format
 
 **Default profiles:**
 
-
+* ecoli_R7
+* ecoli_R7.3
+* ecoli_R9_1D
+* ecoli_R9_2D
+* ecoli_UCSC1b
+* yeast
 
 **New error profiles:**
 
