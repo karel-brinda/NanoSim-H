@@ -1,4 +1,5 @@
 ecoli_simulation
+simulated_*
 *.pyc
 *.bak
 

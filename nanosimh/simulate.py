@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-"""
-Created on Apr 10, 2015
 
-@author: Chen Yang
+"""
+Created by Chen Yang <cheny@bcgsc.ca>
+Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
 
 This script generates simulated Oxford Nanopore 2D reads.
-
 """
 
 from __future__ import print_function
@@ -17,22 +16,40 @@ import os
 import re
 import argparse
 import progressbar
-import numpy as np
+import numpy
 
 from time import strftime
 
 from .mixed_models import *
 from .misc import *
 
-PYTHON_VERSION = sys.version_info
-VERSION = "1.0.0"
-PRORAM = "NanoSim"
-AUTHOR = "Chen Yang (UBC & BCGSC)"
-CONTACT = "cheny@bcgsc.ca"
-
 BASES = ['A', 'T', 'C', 'G']
 
 FASTA_LINE_WIDTH=60
+
+# package directory
+PD=os.path.dirname(os.path.realpath(__file__))
+
+DEFAULT_PROFILES_DIR=os.path.join(PD,"profiles")
+
+MODEL_FILES=[
+		"align_ratio",
+		"aligned_length_ecdf",
+		"aligned_reads_ecdf",
+		"error_markov_model",
+		"first_match.hist",
+		"ht_ratio",
+		"match_markov_model",
+		"model_profile",
+		"unaligned_length_ecdf",
+	]
+
+
+def is_model_dir(model_dir):
+	for mf in MODEL_FILES:
+		if not os.path.isfile(os.path.join(model_dir, mf)):
+			return False
+	return True
 
 
 def fasta_write_sequence(fasta_file, seqname, seq):
@@ -438,9 +455,9 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 				direction = "F"
 
 			# Add head and tail region
-			read_mutated = ''.join(np.random.choice(BASES, head)) + read_mutated
+			read_mutated = ''.join(numpy.random.choice(BASES, head)) + read_mutated
 
-			read_mutated = read_mutated + ''.join(np.random.choice(BASES, tail))
+			read_mutated = read_mutated + ''.join(numpy.random.choice(BASES, tail))
 
 			if kmer_bias:
 				read_mutated = collapse_homo(read_mutated, kmer_bias)
@@ -576,7 +593,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 	k1 = list(m_ht_list.keys())[0]
 	for k2, v2 in m_ht_list[k1].items():
 		if k2[0] < p <= k2[1]:
-			prev_match = int(np.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
+			prev_match = int(numpy.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
 			if prev_match < 2:
 				prev_match = 2
 	pos += prev_match
@@ -617,7 +634,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 		p = random.random()
 		for k2, v2 in m_model[k1].items():
 			if k2[0] < p <= k2[1]:
-				step = int(np.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
+				step = int(numpy.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
 				break
 		# there are no two 0 base matches together
 		if prev_match == 0 and step == 0:
@@ -632,6 +649,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 		if prev_match == 0:
 			prev_error += "0"
 	return l_new, middle_ref, e_dict
+
 
 def cigar_from_errors(e_dict,length):
 	cigar = []
@@ -735,7 +753,7 @@ def case_convert(s_dict):
 
 def main():
 	ref = ""
-	model_dir = "training"
+	model_dir = "ecoli"
 	out = "simulated"
 	number = 20000
 	perfect = False
@@ -880,10 +898,10 @@ def main():
 
 	if seed==0:
 		random.seed()
-		np.random.seed()
+		numpy.random.seed()
 	else:
 		random.seed(seed)
-		np.random.seed(seed)
+		numpy.random.seed(seed)
 
 	assert ins_rate >= 0
 	assert del_rate >= 0
@@ -896,6 +914,16 @@ def main():
 	sys.stdout = open(out + ".log", 'w')
 	# Record the command typed to log file
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ': ' + ' '.join(sys.argv) + '\n')
+
+	if is_model_dir(model_dir):
+			print("Using a user-defined profile: {}".format(model_dir), file=sys.stderr)
+	else:
+		alt=os.path.join(DEFAULT_PROFILES_DIR, model_dir)
+		if is_model_dir(alt):
+			print("Using profile {} from default profiles".format(model_dir), file=sys.stderr)
+			model_dir=alt
+		else:
+			sys.exit("Profile not found: {}".format(model_dir))
 
 	# Read in reference genome and generate simulated reads
 	read_profile(number, model_dir, perfect, max_readlength, min_readlength)
@@ -915,6 +943,7 @@ def main():
 
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Finished!")
 	sys.stdout.close()
+
 
 if __name__ == "__main__":
 	main()
