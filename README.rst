@@ -99,17 +99,19 @@ Simulation stage takes a reference genome and a read profile as input, and outpu
 	                 <reference.fa>
 
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
+	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
 
 	positional arguments:
-	  <reference.fa>        reference genome in fasta file
+	  <reference.fa>        reference genome
 
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -p str, --profile str
-	                        error profile - one of precomputed profiles ('ecoli')
-	                        or a user-specified directory with a profile [ecoli]
+	                        error profile - one of precomputed profiles
+	                        ('ecoli_R7', 'ecoli_R7.3', 'ecoli_R9_1D',
+	                        'ecoli_R9_2D', 'ecoli_UCSC1b', 'yeast') or own
+	                        directory with an error profile [ecoli_R9_2D]
 	  -o str, --out-pref str
 	                        prefix of output file [simulated]
 	  -n int, --number int  number of generated reads [20000]
@@ -131,22 +133,27 @@ Simulation stage takes a reference genome and a read profile as input, and outpu
 	  --kmer-bias int       prohibits homopolymers with length >= n bases in
 	                        output reads [6]
 
-	Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.
+	Examples: nanosim-h --circular ecoli_ref.fasta
+	          nanosim-h --circular --perfect ecoli_ref.fasta
+	          nanosim-h -p yeast --kmer-bias 0 yeast_ref.fasta
+
+	Notice: the use of `max-len` and `min-len` will affect the read length distributions. If
+	the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.
 
 
 **Examples:**
 
 1. If you want to simulate *E. coli* genome, then circular command must be chosen because it's a circular genome
 
-	``nanosimh_simulate --circular Ecoli_ref.fasta``
+	``nanosim-h --circular Ecoli_ref.fasta``
 
 2. If you want to simulate only perfect reads, i.e. no snps, or indels, just simulate the read length distribution
 
-	``nanosimh_simulate --circular --perfect Ecoli_ref.fasta``
+	``nanosimh-h --circular --perfect Ecoli_ref.fasta``
 
 3. If you want to simulate *S. cerevisiae* genome with no kmer bias, then linear command must be chosen because it's a linear genome
 
-	``nanosimh_simulate -p yeast --kmer-bias 0 yeast_ref.fasta``
+	``nanosimh-h -p yeast --kmer-bias 0 yeast_ref.fasta``
 
 
 **Output files:**

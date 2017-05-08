@@ -771,21 +771,32 @@ def main():
 			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
 	"""
 
+	epilog="""\
+			Examples: nanosim-h --circular ecoli_ref.fasta
+			          nanosim-h --circular --perfect ecoli_ref.fasta
+			          nanosim-h -p yeast --kmer-bias 0 yeast_ref.fasta
+
+
+			Notice: the use of `max-len` and `min-len` will affect the read length distributions. If
+			the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.
+	"""
+
 	parser = argparse.ArgumentParser(
-			formatter_class=argparse.RawDescriptionHelpFormatter,description=textwrap.dedent(description),
-			epilog='Notice: the use of `max-len` and `min-len` will affect the read length distributions. If the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.',
+			formatter_class=argparse.RawDescriptionHelpFormatter,
+			description=textwrap.dedent(description),
+			epilog=textwrap.dedent(epilog),
 		)
 
 	parser.add_argument('ref',
 			type=str,
 			metavar='<reference.fa>',
-			help='reference genome in fasta file',
+			help='reference genome',
 		)
 	parser.add_argument('-p','--profile',
 			type=str,
 			metavar='str',
 			dest='model_dir',
-			help='error profile - one of precomputed profiles ({}) or an directory with an error profile [{}]'.format(
+			help='error profile - one of precomputed profiles ({}) or own directory with an error profile [{}]'.format(
 					", ".join(["'{}'".format(x) for x in DEFAULT_PROFILES]),
 					model_dir,
 				),
