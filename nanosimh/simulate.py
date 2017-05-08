@@ -775,7 +775,7 @@ def main():
 
 	description="""\
 			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-			Author:   Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
+			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software (NanoSim)
 			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
 	"""
 

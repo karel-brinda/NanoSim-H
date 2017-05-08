@@ -21,8 +21,6 @@ addons:
     - gcc-4.8
     - r-base
     - r-base-dev
-    #- zlib1g-dev
-    #- libbz2-dev
 before_install:
 - wget http://last.cbrc.jp/last-833.zip
 - unzip last-*.zip
