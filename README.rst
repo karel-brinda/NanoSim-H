@@ -45,7 +45,7 @@ Installation
 
 	conda install -y -c bioconda nanosim-h
 
-**From** `PyPI <https://pypi.python.org/pypi>`_**:**
+**From** `PyPI <https://pypi.python.org/pypi>`_ **:**
 
 .. code-block:: bash
 
