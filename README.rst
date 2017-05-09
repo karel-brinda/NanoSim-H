@@ -19,7 +19,7 @@ and allows for adjustments upon improvement of Nanopore sequencing technology.
 NanoSim-H was created as a fork of `NanoSim <https://github.com/bcgsc/NanoSim>`_ 1.0.1,
 a software package developed by Chen Yang at `Canada's Michael Smith Genome Sciences Centre <http://www.bcgsc.ca/>`_.
 
-NanoSim-H is implemented using Python with use of R for model fitting.
+NanoSim-H is implemented using Python uses R for model fitting.
 In silico reads can be simulated from a given reference genome using ``nanosim-h``.
 The NanoSim-H package is distributed with several precomputed error profiles, but
 additional profiles can be computed using the ``nanosim-h-train``.
@@ -87,7 +87,7 @@ When installed using PIP, all dependencies for read simulation are installed aut
 Read simulation
 ---------------
 
-Simulation stage takes a reference genome and a read profile as input, and outputs simulated reads in FASTA format.
+Simulation stage takes a reference genome and possibly a read profile as input, and outputs simulated reads in FASTA format.
 
 .. code-block::
 
@@ -143,15 +143,15 @@ Simulation stage takes a reference genome and a read profile as input, and outpu
 
 **Examples:**
 
-1. If you want to simulate *E. coli* genome, then circular command must be chosen because it's a circular genome
+1. If you want to simulate reads from *E. coli* genome, then circular mode should be used because it is a circular genome.
 
 	``nanosim-h --circular Ecoli_ref.fasta``
 
-2. If you want to simulate only perfect reads, i.e. no snps, or indels, just simulate the read length distribution
+2. If you want to simulate only perfect reads, i.e. no SNPs, or indels, just simulate the read length distribution.
 
 	``nanosimh-h --circular --perfect Ecoli_ref.fasta``
 
-3. If you want to simulate *S. cerevisiae* genome with no kmer bias, then linear command must be chosen because it's a linear genome
+3. If you want to simulate reads from a *S. cerevisiae* genome with no *k*-mer bias, then linear mode should be chosen because it is a linear genome.
 
 	``nanosimh-h -p yeast --kmer-bias 0 yeast_ref.fasta``
 
@@ -184,16 +184,18 @@ Error profiles
 Characterization stage takes a reference and a training read set in FASTA format as input. User can also provide their own alignment file in MAF format.
 
 
-**Default profiles:**
+**Profiles distributed with NanoSim-H:**
 
-* ecoli_R7
-* ecoli_R7.3
-* ecoli_R9_1D
-* ecoli_R9_2D
-* ecoli_UCSC1b
-* yeast
+* ``ecoli_R7``
+* ``ecoli_R7.3``
+* ``ecoli_R9_1D``
+* ``ecoli_R9_2D`` (default error profile for read simulation)
+* ``ecoli_UCSC1b``
+* ``yeast``
 
 **New error profiles:**
+
+A new error profile can be obtained using the ``nanosim-h-train`` command.
 
 .. code-block::
 
