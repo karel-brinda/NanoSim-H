@@ -160,7 +160,13 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
 1. ``simulated.log`` – Log file for simulation process.
 
-2. ``simulated_reads.fasta`` – FASTA file of simulated reads.
+2. ``simulated_reads.fasta`` – FASTA file of simulated reads. Reads can contain information about how they were created either in RNF, or in the original NanoSim naming convention.
+
+        **RNF naming convention**
+
+        See the associated `RNF paper <https://www.ncbi.nlm.nih.gov/pubmed/26353839/>`_ and `RNF specification <karel-brinda.github.io/rnf-spec/>`_.
+
+        **NanoSim naming convention**
 
 	Each reads has "unaligned", "aligned", or "perfect" in the header determining their error rate. "unaligned" means that the reads have an error rate over 90% and cannot be aligned. "aligned" reads have the same error rate as training reads. "perfect" reads have no errors.
 
