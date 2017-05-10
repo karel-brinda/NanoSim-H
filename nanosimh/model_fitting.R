@@ -8,9 +8,9 @@ set.seed(1)
 args <- commandArgs(TRUE)
 eval(parse(text=args[[1]]))
 # prefix <- "R9/1D/test"
-mis_file <- paste(prefix, "_mis.hist", sep="")
-ins_file <- paste(prefix, "_ins.hist", sep="")
-del_file <- paste(prefix, "_del.hist", sep="")
+mis_file <- paste(prefix, "/mis.hist", sep="")
+ins_file <- paste(prefix, "/ins.hist", sep="")
+del_file <- paste(prefix, "/del.hist", sep="")
 
 mis <- read.delim(mis_file)
 mis.freq <- mis$Mismatches.
@@ -196,5 +196,5 @@ model_fit.table <- data.frame(Type = c("mismatch", "insertion", "deletion"),
                               prob = c(mis.fit[2], ins.fit[3], del.fit[3]),
                               weight = c(mis.fit[3], ins.fit[4], del.fit[4]))
 
-out_file <- paste(prefix, "_model_profile", sep="")
+out_file <- paste(prefix, "/model_profile", sep="")
 write.table(model_fit.table, out_file, row.names = FALSE, quote = FALSE, sep = "\t")

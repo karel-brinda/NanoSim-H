@@ -57,28 +57,18 @@ def flex_bins(num_of_bins, ratio_dict, num_of_reads):
 	return ratio_bins
 
 
-def head_align_tail(outfile, num_of_bins):
-	out1 = open(outfile + '_aligned_length_ecdf', 'w')
-	out2 = open(outfile + '_aligned_reads_ecdf', 'w')
-	out3 = open(outfile + '_ht_ratio', 'w')
-	out4 = open(outfile + "_align_ratio", 'w')
-
-	'''
-	out5 = open(outfile + "_total.txt", 'w')
-	out6 = open(outfile + "_middle.txt", 'w')
-	out7 = open(outfile + "_head.txt", 'w')
-	out8 = open(outfile + "_middle_ref.txt", 'w')
-	out9 = open(outfile + "_ht.txt", 'w')
-	out10 = open(outfile + "_ratio.txt", 'w')
-	out11 = open(outfile + "_tail.txt", 'w')
-	'''
+def head_align_tail(model_dir, num_of_bins):
+	out1 = open(os.path.join(model_dir,'aligned_length_ecdf'), 'w')
+	out2 = open(os.path.join(model_dir,'aligned_reads_ecdf'), 'w')
+	out3 = open(os.path.join(model_dir,'ht_ratio'), 'w')
+	out4 = open(os.path.join(model_dir,'align_ratio'), 'w')
 
 	aligned = []
 	total = []
 	ht_ratio = {}
 	align_ratio = {}
 
-	besthit_out = outfile + "_besthit.maf"
+	besthit_out = os.path.join(model_dir, "besthit.maf")
 	with open(besthit_out, 'r') as f:
 		for line in f:
 			ref = line.strip().split()

@@ -34,14 +34,14 @@ def add_match(prev, succ, match_list):
 	match_list[prev][succ] += 1
 
 
-def hist(outfile):
-	out_match = open(outfile + "_match.hist", 'w')
-	out_mis = open(outfile + "_mis.hist", 'w')
-	out_ins = open(outfile + "_ins.hist", 'w')
-	out_del = open(outfile + "_del.hist", 'w')
-	out1 = open(outfile + "_error_markov_model", 'w')
-	out2 = open(outfile + "_match_markov_model", 'w')
-	out3 = open(outfile + "_first_match.hist", 'w')
+def hist(model_dir):
+	out_match = open(os.path.join(model_dir,"match.hist"), 'w')
+	out_mis = open(os.path.join(model_dir,"mis.hist"), 'w')
+	out_ins = open(os.path.join(model_dir,"ins.hist"), 'w')
+	out_del = open(os.path.join(model_dir,"del.hist"), 'w')
+	out1 = open(os.path.join(model_dir,"error_markov_model"), 'w')
+	out2 = open(os.path.join(model_dir,"match_markov_model"), 'w')
+	out3 = open(os.path.join(model_dir,"first_match.hist"), 'w')
 
 	dic_match = {}
 	dic_first_match = {}
@@ -70,7 +70,7 @@ def hist(outfile):
 		dic_ins[x] = 0
 		dic_del[x] = 0
 
-	with open(outfile + "_besthit.maf", 'r') as f:
+	with open(os.path.join(model_dir,"besthit.maf"), 'r') as f:
 		for line in f:
 			prev_match = 0
 			prev_error = ""

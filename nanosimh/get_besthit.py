@@ -10,9 +10,9 @@ License: GPL
 from __future__ import with_statement
 
 
-def besthit_and_unaligned(infile, outmaf, outfile):
+def besthit_and_unaligned(infile, outmaf, outdir):
 	align_dict = {}
-	out1 = open(outfile + "_besthit.maf", 'w')
+	out1 = open(os.path.join(outfile, "besthit.maf"), 'w')
 	unaligned_dict = {}
 
 	with open(outmaf, 'r') as f:
