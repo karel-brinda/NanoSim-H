@@ -18,6 +18,7 @@ NanoSim-H is a simulator of Oxford Nanopore reads that captures the technology-s
 and allows for adjustments upon improvement of Nanopore sequencing technology.
 NanoSim-H was created as a fork of `NanoSim <https://github.com/bcgsc/NanoSim>`_ 1.0.1,
 a software package developed by Chen Yang at `Canada's Michael Smith Genome Sciences Centre <http://www.bcgsc.ca/>`_.
+NanoSim-H 
 
 NanoSim-H is implemented using Python uses R for model fitting.
 In silico reads can be simulated from a given reference genome using ``nanosim-h``.
@@ -29,6 +30,7 @@ The main improvements compared to NanoSim are:
 * Support for Python 3
 * Support for `RNF <https://www.ncbi.nlm.nih.gov/pubmed/26353839>`_ read names
 * Installation from `PyPI <https://pypi.python.org/pypi/NanoSim-H/>`_
+* Error profiles within the main package
 * Automatic testing using `Travis <https://travis-ci.org/karel-brinda/NanoSim-H>`_
 * Reproducible simulations (setting a seed for PRG)
 * Improved interface with new parameters (e.g., for merging all contigs) and a progress bar for read simulation
@@ -84,6 +86,12 @@ When installed using Bioconda, all NanoSim-H dependencies get installed automati
 When installed using PIP, all dependencies for read simulation are installed automatically.
 
 
+Quick example of usage
+----------------------
+
+``nanosim-h your_ref.fasta``
+
+
 Read simulation
 ---------------
 
@@ -102,8 +110,9 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	                 <reference.fa>
 	
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
+	Version:  1.1.0.0
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
-	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
+	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
 	positional arguments:
 	  <reference.fa>        reference genome
@@ -123,7 +132,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	  -i float, --ins-rate float
 	                        insertion rate (weight tuning) [1.0]
 	  -d float, --del-rate float
-	                        deletion reate (weight tuning) [1.0]
+	                        deletion rate (weight tuning) [1.0]
 	  -s int, --seed int    initial seed for the pseudorandom number generator (0
 	                        for random) [42]
 	  --circular            circular simulation (linear otherwise)
@@ -214,19 +223,23 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 .. code-block::
 
 	$ nanosim-h-train --help
-	usage: nanosim-h-train [-h] [-i str] -r str [-m str] [-p str] [-b int]
-	                       [--no-model-fit]
+	usage: nanosim-h-train [-h] [-i str] [-m str] [-b int] [--no-model-fit]
+	                       <reference.fa> <profile.dir>
 	
-	NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.
+	Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
+	Version:  1.1.0.0
+	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
+	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
+	
+	positional arguments:
+	  <reference.fa>        reference genome of the training reads
+	  <profile.dir>         error profile dir
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -i str, --infile str  training ONT real reads, must be fasta files
-	  -r str, --ref str     reference genome of the training reads
 	  -m str, --maf str     user can provide their own alignment file, with maf
 	                        extension
-	  -p str, --profile str
-	                        prefix of output files [training]
 	  -b int, --num-bins int
 	                        number of bins (for development) [20]
 	  --no-model-fit        no model fitting
@@ -248,4 +261,4 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 10. ``match_markov_model`` – Markov model of the length of matches (stretches of correct base calls).
 11. ``model_profile`` – Fitted model for errors.
 12. ``processed.maf`` – A re-formatted MAF file for user-provided alignment file.
-13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads.
+13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads

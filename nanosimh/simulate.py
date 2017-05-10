@@ -27,6 +27,8 @@ from time import strftime
 from .mixed_models import *
 from .misc import *
 
+from .version import VERSION
+
 
 BASES = ['A', 'T', 'C', 'G']
 
@@ -769,9 +771,10 @@ def main():
 
 	description="""\
 			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
+			Version:  {}
 			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
-			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
-	"""
+			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
+	""".format(VERSION)
 
 	epilog="""\
 			Examples: nanosim-h --circular ecoli_ref.fasta

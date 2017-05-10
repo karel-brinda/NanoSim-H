@@ -17,11 +17,14 @@ import sys
 import os
 import argparse
 import numpy
+import textwrap
 from .head_align_tail_dist import *
 from .get_besthit import *
 from .besthit_to_histogram import * 
 import multiprocessing
 from .misc import *
+
+from .version import VERSION
 
 nb_cores=multiprocessing.cpu_count()
 
@@ -36,8 +39,17 @@ def main():
 	model_fit = True
 	num_bins = 20
 
+	description="""\
+			Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
+			Version:  {}
+			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
+			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
+	""".format(VERSION)
+
+
 	parser = argparse.ArgumentParser(
-			description='NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.',
+			formatter_class=argparse.RawDescriptionHelpFormatter,
+			description=textwrap.dedent(description),
 		)
 
 	parser.add_argument('ref',
