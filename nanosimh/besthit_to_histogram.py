@@ -9,6 +9,7 @@ License: GPL
 
 from __future__ import with_statement
 import numpy
+import os
 
 def add_dict(error, dic):
 	if error not in dic:

@@ -14,6 +14,7 @@ from __future__ import with_statement
 import sys
 import getopt
 import numpy
+import os
 
 
 def flex_bins(num_of_bins, ratio_dict, num_of_reads):

@@ -92,6 +92,7 @@ def main():
 	if infile!='':
 		assert_file_exists(infile, True)
 
+	os.makedirs(model_dir , exist_ok=True)
 
 	# READ PRE-PROCESS AND UNALIGNED READS ANALYSIS
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read pre-process and unaligned reads analysis\n")

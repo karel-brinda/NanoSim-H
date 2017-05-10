@@ -77,7 +77,7 @@ For read simulation:
 
 For computing new error profiles:
 
-* `LAST <http://last.cbrc.jp/>`_ (tested with version 833)
+* `LAST <http://last.cbrc.jp/>`_ (tested with version 847)
 * `R <https://www.r-project.org/>`_
 
 When installed using Bioconda, all NanoSim-H dependencies get installed automatically.
