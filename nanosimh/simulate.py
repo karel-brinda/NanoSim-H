@@ -242,14 +242,14 @@ def collapse_homo(seq, k):
 	return read
 
 
-def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf_cigar):
+def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf_cigar):
 	global unaligned_length, number_aligned, aligned_dict
 	global genome_len, seq_dict, seq_len
 	global match_ht_list, align_ratio, ht_dict, match_markov_model
 	global trans_error_pr, error_par
 
 	assert min_l <= max_l, "min_len must be <= max_len"
-	assert os.path.isfile(ref), "File '{}' does not exist".format(ref)
+	#assert os.path.isfile(ref), "File '{}' does not exist".format(ref)
 
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read in reference genome\n")
 	seq_dict = {}
@@ -264,23 +264,22 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 
 
 	# Read in the reference genome
-	assert_file_exists(ref)
-	with open(ref, 'r') as infile:
-		for line in infile:
-			if line[0] == ">":
-				new_line = line.strip()[1:]
-				info = re.split(r'[_\s]\s*', new_line)
-				chr_name = "-".join(info)
+	#assert_file_exists(ref)
+	for line in ref_fo:
+		if line[0] == ">":
+			new_line = line.strip()[1:]
+			info = re.split(r'[_\s]\s*', new_line)
+			chr_name = "-".join(info)
+		else:
+			if merge:
+				seq_dict["merged"].append(line.strip())
 			else:
-				if merge:
-					seq_dict["merged"].append(line.strip())
+				if chr_name in seq_dict:
+					seq_dict[chr_name].append(line.strip())
+					chrom_id[chr_name]=i
+					i+=1
 				else:
-					if chr_name in seq_dict:
-						seq_dict[chr_name].append(line.strip())
-						chrom_id[chr_name]=i
-						i+=1
-					else:
-						seq_dict[chr_name] = [line.strip()]
+					seq_dict[chr_name] = [line.strip()]
 
 	for k in seq_dict.keys():
 		seq_dict[k]="".join(seq_dict[k])
@@ -792,10 +791,10 @@ def main():
 			epilog=textwrap.dedent(epilog),
 		)
 
-	parser.add_argument('ref',
-			type=str,
+	parser.add_argument('ref_fo',
+			type=argparse.FileType('r'),
 			metavar='<reference.fa>',
-			help='reference genome',
+			help='reference genome (- for standard input)',
 		)
 	parser.add_argument('-p','--profile',
 			type=str,
@@ -898,7 +897,7 @@ def main():
 
 	args = parser.parse_args()
 
-	ref = args.ref
+	ref_fo = args.ref_fo
 	model_dir = args.model_dir
 	out = args.out
 	number = args.number
@@ -932,7 +931,7 @@ def main():
 	assert mis_rate >= 0
 	assert min_readlength >= 0
 	assert min_readlength <= max_readlength, "Maximum read length must be longer than minimum read length."
-	assert os.path.isfile(ref), "File '{}' does not exist.".format(ref)
+	#assert os.path.isfile(ref), "File '{}' does not exist.".format(ref)
 
 	# Generate log file
 	sys.stdout = open(out + ".log", 'w')
@@ -953,7 +952,7 @@ def main():
 	read_profile(number, model_dir, perfect, max_readlength, min_readlength)
 
 	simulation(
-			ref=ref,
+			ref_fo=ref_fo,
 			out=out,
 			dna_type=dna_type,
 			per=perfect,

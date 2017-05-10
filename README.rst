@@ -36,6 +36,7 @@ The main improvements compared to NanoSim are:
 * Improved interface with new parameters (e.g., for merging all contigs) and a progress bar for read simulation
 * Several minor bugs fixed
 
+Versions of NanoSim-H are kept synchronized with the version of NanoSim.
 
 Installation
 ------------
@@ -89,7 +90,8 @@ When installed using PIP, all dependencies for read simulation are installed aut
 Quick example of usage
 ----------------------
 
-``nanosim-h your_ref.fasta``
+.. code-block:: bash
+	curl "https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?db=nuccore&dopt=fasta&val=545778205&sendto=on" | nanosim-h -n 100 -
 
 
 Read simulation
@@ -115,7 +117,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
 	positional arguments:
-	  <reference.fa>        reference genome
+	  <reference.fa>        reference genome (- for standard input)
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
@@ -261,4 +263,4 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 10. ``match_markov_model`` – Markov model of the length of matches (stretches of correct base calls).
 11. ``model_profile`` – Fitted model for errors.
 12. ``processed.maf`` – A re-formatted MAF file for user-provided alignment file.
-13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads
+13. ``unaligned_length_ecdf`` – Length distribution of unaligned read
