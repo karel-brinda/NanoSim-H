@@ -132,8 +132,13 @@ def main():
 	else:
 		# Alignment
 		sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Alignment with LAST\n")
+
+		#
+		# TODO (Karel): some versions of LAST dont support -P so I remove it for now
+		#
 		run('lastdb -P {} ref_genome "{}"'.format(nb_cores, ref))
-		run('lastal -T0 -r1 -q1 -a1 -b1 -m100 -P {} ref_genome "{}" | grep \'^s \' > "{}"'.format(nb_cores, in_fasta, out_maf))
+		run('lastal -T0 -r1 -q1 -a1 -b1 -m100 ref_genome "{}" | grep \'^s \' > "{}"'.format(in_fasta, out_maf))
+		#run('lastal -T0 -r1 -q1 -a1 -b1 -m100 -P {} ref_genome "{}" | grep \'^s \' > "{}"'.format(nb_cores, in_fasta, out_maf))
 
 		# get best hit and unaligned reads
 		unaligned_length = list(besthit_and_unaligned(in_fasta, out_maf, model_dir))
