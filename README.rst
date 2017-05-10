@@ -61,7 +61,7 @@ Installation
 
 	conda install -y -c bioconda nanosim-h
 
-**From** `PyPI <https://pypi.python.org/pypi>`_ **:**
+**From** `PyPI <https://pypi.python.org/pypi/NanoSim-H/>`_ **:**
 
 .. code-block:: bash
 
@@ -118,7 +118,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	                 <reference.fa>
 	
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-	Version:  1.1.0.0
+	Version:  1.1.0.2
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
@@ -190,7 +190,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
         **RNF naming convention**
 
-        See the associated `RNF paper <https://www.ncbi.nlm.nih.gov/pubmed/26353839/>`_ and `RNF specification <karel-brinda.github.io/rnf-spec/>`_.
+        See the associated `RNF paper <https://www.ncbi.nlm.nih.gov/pubmed/26353839/>`_ and `RNF specification <http://karel-brinda.github.io/rnf-spec/>`_.
 
         **NanoSim naming convention**
 
@@ -238,7 +238,7 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 	                       <reference.fa> <profile.dir>
 	
 	Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
-	Version:  1.1.0.0
+	Version:  1.1.0.2
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
