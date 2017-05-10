@@ -1,22 +1,19 @@
 #!/usr/bin/env python
+
 """
-Written by Chen Yang on Mar 25th, 2015
+Created by Chen Yang <cheny@bcgsc.ca>
+Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
+
+License: GPL
+
 To get the length of head, aligned, and tail regions of an alignment.
-
-Major change in Apr 22nd
-
-Updated in Nov 25th
 """
+
 
 from __future__ import with_statement
 import sys
 import getopt
 import numpy
-
-try:
-	from six.moves import range
-except ImportError:
-	pass
 
 
 def flex_bins(num_of_bins, ratio_dict, num_of_reads):

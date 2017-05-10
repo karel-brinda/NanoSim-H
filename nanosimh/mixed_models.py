@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+
 """
-Created on Apr 28th by Chen Yang
+Created by Chen Yang <cheny@bcgsc.ca>
+Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
+
+License: GPL
 
 This script is used to generate random numbers following certain mixed distribution models
 """
 
-import numpy as np
 import math
 
 # numpy.random.geometric generate positive integers, starting from 1
@@ -13,20 +16,20 @@ import math
 
 
 def pois_geom(lam, prob, weight):
-	tmp_rand = np.random.random()
+	tmp_rand = numpy.random.random()
 	if tmp_rand < weight:
-		value = np.random.poisson(lam) + 1
+		value = numpy.random.poisson(lam) + 1
 	else:
-		value = np.random.geometric(prob)
+		value = numpy.random.geometric(prob)
 	return value
 
 
 def wei_geom(lam, k, prob, weight):
-	tmp_rand = np.random.random()
+	tmp_rand = numpy.random.random()
 	if tmp_rand < weight:
-		value = int(round(math.ceil(lam * np.random.weibull(k))))
+		value = int(round(math.ceil(lam * numpy.random.weibull(k))))
 	else:
-		value = np.random.geometric(prob) - 1
+		value = numpy.random.geometric(prob) - 1
 
 	if value == 0:
 		value = 1

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 """
-Created on Apr 10, 2015
+Created by Chen Yang <cheny@bcgsc.ca>
+Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
 
-@author: Chen Yang
+License: GPL
 
 This script generates read profiles Oxford Nanopore 2D reads.
-
 """
 
 from __future__ import print_function

@@ -1,3 +1,10 @@
+"""
+Created by Karel Brinda <kbrinda@hsph.harvard.edu>
+
+License: GPL
+"""
+
+
 import os
 
 def assert_file_exists(fn,test_nonempty=False):

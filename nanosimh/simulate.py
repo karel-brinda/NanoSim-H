@@ -4,6 +4,8 @@
 Created by Chen Yang <cheny@bcgsc.ca>
 Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
 
+License: GPL
+
 This script generates simulated Oxford Nanopore 2D reads.
 """
 
@@ -834,7 +836,7 @@ def main():
 			type=float,
 			metavar='float',
 			dest='del_rate',
-			help='deletion reate (weight tuning) [{}]'.format(del_rate),
+			help='deletion rate (weight tuning) [{}]'.format(del_rate),
 			default=del_rate,
 		)
 	parser.add_argument('-s','--seed',
