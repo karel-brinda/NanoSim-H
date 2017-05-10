@@ -10,6 +10,7 @@ This script is used to generate random numbers following certain mixed distribut
 """
 
 import math
+import numpy
 
 # numpy.random.geometric generate positive integers, starting from 1
 # the rgeom in R generate values starting from 0
