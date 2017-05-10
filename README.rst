@@ -16,9 +16,9 @@ About
 
 NanoSim-H is a simulator of Oxford Nanopore reads that captures the technology-specific features of ONT data,
 and allows for adjustments upon improvement of Nanopore sequencing technology.
-NanoSim-H was created as a fork of `NanoSim <https://github.com/bcgsc/NanoSim>`_ 1.0.1,
+NanoSim-H has been derived from `NanoSim <https://github.com/bcgsc/NanoSim>`_,
 a software package developed by Chen Yang at `Canada's Michael Smith Genome Sciences Centre <http://www.bcgsc.ca/>`_.
-NanoSim-H
+The fork was created from version 1.0.1 and the versions of NanoSim-H and NanoSim are kept synchronized.
 
 NanoSim-H is implemented using Python uses R for model fitting.
 In silico reads can be simulated from a given reference genome using ``nanosim-h``.
@@ -36,7 +36,6 @@ The main improvements compared to NanoSim are:
 * Improved interface with new parameters (e.g., for merging all contigs) and a progress bar for read simulation
 * Several minor bugs fixed
 
-Versions of NanoSim-H are kept synchronized with the version of NanoSim.
 
 
 Quick example
