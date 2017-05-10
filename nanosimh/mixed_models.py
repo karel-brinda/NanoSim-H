@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 """
-Created by Chen Yang <cheny@bcgsc.ca>
-Modified by Karel Brinda <kbrinda@hsph.harvard.edu>
+@copyright 2016 Chen Yang
+@copyright 2017 Karel Brinda
 
-License: GPL
+Created by Chen Yang <cheny@bcgsc.ca> (NanoSim)
+Forked and modified by Karel Brinda <kbrinda@hsph.harvard.edu> (NanoSim-H)
+
+License: GPLv3
 
 This script is used to generate random numbers following certain mixed distribution models
 """

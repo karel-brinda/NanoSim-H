@@ -1,3 +1,14 @@
+#############################################################################
+# @copyright 2016 Chen Yang                                                 #
+# @copyright 2017 Karel Brinda                                              #
+#                                                                           #
+# Created by Chen Yang <cheny@bcgsc.ca> (NanoSim)                           #
+# Forked and modified by Karel Brinda <kbrinda@hsph.harvard.edu (NanoSim-H) #
+#                                                                           #
+# License: GPL                                                              #
+#############################################################################
+
+
 library(stats4)
 
 # Ensure that the results will be reproducible

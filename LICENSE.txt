@@ -1,5 +1,6 @@
-NanoSim
+NanoSim-H - a simulator of Oxford Nanopore reads.
 Copyright 2016 Chen Yang
+Copyright 2017 Karel Brinda
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
