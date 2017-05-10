@@ -41,11 +41,12 @@ Versions of NanoSim-H are kept synchronized with the version of NanoSim.
 
 Quick example
 -------------
-
+	
 .. code-block:: bash
 	
 	pip install --upgrade nanosim-h
-	curl "https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?db=nuccore&dopt=fasta&val=545778205&sendto=on" | nanosim-h -n 100 -
+	curl "https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?db=nuccore&dopt=fasta&val=545778205&sendto=on" | \
+		nanosim-h -n 100 -
 
 
 
