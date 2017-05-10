@@ -146,7 +146,7 @@ def get_length(len_dict, num, max_l, min_l):
 	return length_list
 
 
-def read_profile(number, model_dir, per, max_l, min_l):
+def read_profile(number, model_dir, per, max_l, min_l, unaligned_prop):
 	global unaligned_length, number_aligned, aligned_dict
 	global match_ht_list, align_ratio, ht_dict, error_par
 	global trans_error_pr, match_markov_model
@@ -201,8 +201,10 @@ def read_profile(number, model_dir, per, max_l, min_l):
 		# if parameter perfect is used, all reads should be aligned, number_aligned equals total number of reads.
 		if per or rate == "100%":
 			number_aligned = number
-		else:
+		elif unaligned_prop is None:
 			number_aligned = int(round(number * float(rate) / (float(rate) + 1)))
+		else:
+			number_aligned = int(round(number * (1-float(unaligned_prop))))
 		number_unaligned = number - number_aligned
 		unaligned_dict = read_ecdf(u_profile)
 
@@ -354,6 +356,7 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Start simulation of aligned reads\n")
 
 	if per:
+		print("Simulating perfect aligned reads", file=sys.stderr)
 		ref_length = get_length(aligned_dict, number_aligned, max_l, min_l)
 		del aligned_dict
 
@@ -760,7 +763,7 @@ def main():
 	ref = ""
 	model_dir = DEFAULT_PROFILE
 	out = "simulated"
-	number = 20000
+	number = 10000
 	perfect = False
 	# ins, del, mis rate represent the weight tuning in mix model
 	ins_rate = 1.0
@@ -770,6 +773,7 @@ def main():
 	min_readlength = 50
 	kmer_bias = 6
 	seed = 42
+	unaligned_prop=None
 
 	description="""\
 			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
@@ -822,6 +826,13 @@ def main():
 			dest='number',
 			help='number of generated reads [{}]'.format(number),
 			default=number,
+		)
+	parser.add_argument('-u','--unalign-rate',
+			type=str,
+			metavar='float',
+			dest='unaligned_prop',
+			help='rate of unaligned reads [detect from error profile]',
+			default=None,
 		)
 	parser.add_argument('-m','--mis-rate',
 			type=float,
@@ -904,6 +915,7 @@ def main():
 	model_dir = args.model_dir
 	out = args.out
 	number = args.number
+	unaligned_prop = args.unaligned_prop
 	perfect = args.perfect
 	ins_rate = args.ins_rate
 	del_rate = args.del_rate
@@ -952,7 +964,7 @@ def main():
 			sys.exit("Profile not found: {}".format(model_dir))
 
 	# Read in reference genome and generate simulated reads
-	read_profile(number, model_dir, perfect, max_readlength, min_readlength)
+	read_profile(number, model_dir, perfect, max_readlength, min_readlength, unaligned_prop)
 
 	simulation(
 			ref_fo=ref_fo,
