@@ -89,6 +89,9 @@ Read simulation
 
 Simulation stage takes a reference genome and possibly a read profile as input, and outputs simulated reads in FASTA format.
 
+
+.. command: nanosim-h --help
+
 .. code-block::
 
 	$ nanosim-h -h
@@ -139,6 +142,8 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
 	Notice: the use of `max-len` and `min-len` will affect the read length distributions. If
 	the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.
+
+.. end
 
 
 **Examples:**
@@ -203,6 +208,8 @@ Characterization stage takes a reference and a training read set in FASTA format
 
 A new error profile can be obtained using the ``nanosim-h-train`` command.
 
+.. command: nanosim-h-train --help
+
 .. code-block::
 
 	$ nanosimh_train --help
@@ -224,6 +231,7 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 
 	\* NOTICE: -m option allows users to provide their own alignment file. Make sure that the name of query sequences are the same as appears in the fasta files. For fasta files, some headers have spaces in them and most aligners only take part of the header (before the first white space/tab) as the query name. However, the truncated headers may not be unique if using the output of poretools. We suggest users to pre-process the fasta files by concatenating all elements in the header via '\_' before alignment and feed the processed fasta file as input of NanoSim.
 
+.. end
 
 **Files associated with an error profile:**
 
