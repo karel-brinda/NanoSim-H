@@ -11,7 +11,7 @@ def rest_cli(command):
 	out=p.decode('unicode_escape')
 	s=out.split("\n")
 	s=list(map(lambda x: "	"+x, s))
-	return "\n.. code-block::\n\n" + "\n".join(s) + "\n"
+	return "\n.. code-block::\n\n\t$ " + " ".join(command) + "\n" + "\n".join(s) + "\n"
 
 
 def main():
@@ -31,10 +31,11 @@ def main():
 					out.append(rest_cli(command.split(" ")))
 					command_mode=True
 			else:
-				if x.find(".. end"):
+				if x.find(".. end")==0:
 					out.append(x)
 					command_mode=False
-	print("\n".join(out))
+	with open('README.rst', 'w') as readme:
+		readme.write("\n".join(out))
 
 
 if __name__ == "__main__":

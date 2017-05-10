@@ -94,20 +94,20 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
 .. code-block::
 
-	$ nanosim-h -h
+	$ nanosim-h --help
 	usage: nanosim-h [-h] [-p str] [-o str] [-n int] [-m float] [-i float]
 	                 [-d float] [-s int] [--circular] [--perfect]
 	                 [--merge-contigs] [--rnf] [--rnf-add-cigar] [--max-len int]
 	                 [--min-len int] [--kmer-bias int]
 	                 <reference.fa>
-
+	
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of this fork
-
+	
 	positional arguments:
 	  <reference.fa>        reference genome
-
+	
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -p str, --profile str
@@ -135,13 +135,14 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	  --min-len int         minimum read length [50]
 	  --kmer-bias int       prohibits homopolymers with length >= n bases in
 	                        output reads [6]
-
+	
 	Examples: nanosim-h --circular ecoli_ref.fasta
 	          nanosim-h --circular --perfect ecoli_ref.fasta
 	          nanosim-h -p yeast --kmer-bias 0 yeast_ref.fasta
-
+	
 	Notice: the use of `max-len` and `min-len` will affect the read length distributions. If
 	the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.
+	
 
 .. end
 
@@ -212,24 +213,24 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 
 .. code-block::
 
-	$ nanosimh_train --help
-	usage: nanosimh_train [-h] [-i str] -r str [-m str] [-o str] [-b int]
-	                      [--no-model-fit]
-
+	$ nanosim-h-train --help
+	usage: nanosim-h-train [-h] [-i str] -r str [-m str] [-p str] [-b int]
+	                       [--no-model-fit]
+	
 	NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.
-
+	
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -i str, --infile str  training ONT real reads, must be fasta files
 	  -r str, --ref str     reference genome of the training reads
 	  -m str, --maf str     user can provide their own alignment file, with maf
 	                        extension
-	  -o str                prefix of output file [training]
-	  -b int                number of bins (for development) [20]
+	  -p str, --profile str
+	                        prefix of output files [training]
+	  -b int, --num-bins int
+	                        number of bins (for development) [20]
 	  --no-model-fit        no model fitting
-
-
-	\* NOTICE: -m option allows users to provide their own alignment file. Make sure that the name of query sequences are the same as appears in the fasta files. For fasta files, some headers have spaces in them and most aligners only take part of the header (before the first white space/tab) as the query name. However, the truncated headers may not be unique if using the output of poretools. We suggest users to pre-process the fasta files by concatenating all elements in the header via '\_' before alignment and feed the processed fasta file as input of NanoSim.
+	
 
 .. end
 
@@ -248,5 +249,3 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 11. ``model_profile`` – Fitted model for errors.
 12. ``processed.maf`` – A re-formatted MAF file for user-provided alignment file.
 13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads.
-
-
