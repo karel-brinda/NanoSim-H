@@ -30,16 +30,18 @@ The main improvements compared to NanoSim are:
 * Support for Python 3
 * Support for `RNF <https://www.ncbi.nlm.nih.gov/pubmed/26353839>`_ read names
 * Installation from `PyPI <https://pypi.python.org/pypi/NanoSim-H/>`_
-* Error profiles within the main package
+* Error profiles distributed with the main package
 * Automatic testing using `Travis <https://travis-ci.org/karel-brinda/NanoSim-H>`_
 * Reproducible simulations (setting a seed for PRG)
-* Improved interface with new parameters (e.g., for merging all contigs) and a progress bar for read simulation
+* Improved interface with new parameters (e.g., for merging all contigs) and a progress bar
 * Several minor bugs fixed
 
 
 
 Quick example
 -------------
+
+Simulation of 100 reads from an *E.coli genome*.
 
 .. code-block:: bash
 
