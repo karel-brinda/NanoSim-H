@@ -1,38 +1,72 @@
 #!/usr/bin/env python
-"""
-Created on Apr 10, 2015
 
-@author: Chen Yang
+"""
+@copyright 2016 Chen Yang
+@copyright 2017 Karel Brinda
+
+Created by Chen Yang <cheny@bcgsc.ca> (NanoSim)
+Forked and modified by Karel Brinda <kbrinda@hsph.harvard.edu> (NanoSim-H)
+
+License: GPLv3
 
 This script generates simulated Oxford Nanopore 2D reads.
-
 """
 
 from __future__ import print_function
 from __future__ import with_statement
 import argparse
+import textwrap
 import sys
 import random
 import os
 import re
 import argparse
 import progressbar
-import numpy as np
+import numpy
+import glob
 
 from time import strftime
 
 from .mixed_models import *
 from .misc import *
 
-PYTHON_VERSION = sys.version_info
-VERSION = "1.0.0"
-PRORAM = "NanoSim"
-AUTHOR = "Chen Yang (UBC & BCGSC)"
-CONTACT = "cheny@bcgsc.ca"
+from .version import VERSION
+
 
 BASES = ['A', 'T', 'C', 'G']
 
 FASTA_LINE_WIDTH=60
+
+# package directory
+PD=os.path.dirname(os.path.realpath(__file__))
+
+DEFAULT_PROFILE='ecoli_R9_2D'
+
+DEFAULT_PROFILES_DIR=os.path.join(PD,"profiles")
+glob.glob(DEFAULT_PROFILES_DIR+"*/")
+DEFAULT_PROFILES_ABS=glob.glob(DEFAULT_PROFILES_DIR+"/*/")
+DEFAULT_PROFILES=[
+	x.replace(os.path.abspath(DEFAULT_PROFILES_DIR),"")[1:-1] for x in DEFAULT_PROFILES_ABS
+]
+
+MODEL_FILES=[
+		"align_ratio",
+		"aligned_length_ecdf",
+		"aligned_reads_ecdf",
+		"error_markov_model",
+		"first_match.hist",
+		"ht_ratio",
+		"match_markov_model",
+		"model_profile",
+		"unaligned_length_ecdf",
+	]
+
+
+def is_model_dir(model_dir):
+	for mf in MODEL_FILES:
+		if not os.path.isfile(os.path.join(model_dir, mf)):
+			return False
+	return True
 
 
 def fasta_write_sequence(fasta_file, seqname, seq):
@@ -112,7 +146,7 @@ def get_length(len_dict, num, max_l, min_l):
 	return length_list
 
 
-def read_profile(number, model_dir, per, max_l, min_l):
+def read_profile(number, model_dir, per, max_l, min_l, unaligned_prop):
 	global unaligned_length, number_aligned, aligned_dict
 	global match_ht_list, align_ratio, ht_dict, error_par
 	global trans_error_pr, match_markov_model
@@ -167,8 +201,10 @@ def read_profile(number, model_dir, per, max_l, min_l):
 		# if parameter perfect is used, all reads should be aligned, number_aligned equals total number of reads.
 		if per or rate == "100%":
 			number_aligned = number
-		else:
+		elif unaligned_prop is None:
 			number_aligned = int(round(number * float(rate) / (float(rate) + 1)))
+		else:
+			number_aligned = int(round(number * (1-float(unaligned_prop))))
 		number_unaligned = number - number_aligned
 		unaligned_dict = read_ecdf(u_profile)
 
@@ -211,14 +247,14 @@ def collapse_homo(seq, k):
 	return read
 
 
-def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf_cigar):
+def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf_cigar):
 	global unaligned_length, number_aligned, aligned_dict
 	global genome_len, seq_dict, seq_len
 	global match_ht_list, align_ratio, ht_dict, match_markov_model
 	global trans_error_pr, error_par
 
 	assert min_l <= max_l, "min_len must be <= max_len"
-	assert os.path.isfile(ref), "File '{}' does not exist".format(ref)
+	#assert os.path.isfile(ref), "File '{}' does not exist".format(ref)
 
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read in reference genome\n")
 	seq_dict = {}
@@ -233,23 +269,22 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 
 
 	# Read in the reference genome
-	assert_file_exists(ref)
-	with open(ref, 'r') as infile:
-		for line in infile:
-			if line[0] == ">":
-				new_line = line.strip()[1:]
-				info = re.split(r'[_\s]\s*', new_line)
-				chr_name = "-".join(info)
+	#assert_file_exists(ref)
+	for line in ref_fo:
+		if line[0] == ">":
+			new_line = line.strip()[1:]
+			info = re.split(r'[_\s]\s*', new_line)
+			chr_name = "-".join(info)
+		else:
+			if merge:
+				seq_dict["merged"].append(line.strip())
 			else:
-				if merge:
-					seq_dict["merged"].append(line.strip())
+				if chr_name in seq_dict:
+					seq_dict[chr_name].append(line.strip())
+					chrom_id[chr_name]=i
+					i+=1
 				else:
-					if chr_name in seq_dict:
-						seq_dict[chr_name].append(line.strip())
-						chrom_id[chr_name]=i
-						i+=1
-					else:
-						seq_dict[chr_name] = [line.strip()]
+					seq_dict[chr_name] = [line.strip()]
 
 	for k in seq_dict.keys():
 		seq_dict[k]="".join(seq_dict[k])
@@ -321,10 +356,12 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Start simulation of aligned reads\n")
 
 	if per:
+		print("Simulating perfect aligned reads", file=sys.stderr)
 		ref_length = get_length(aligned_dict, number_aligned, max_l, min_l)
 		del aligned_dict
 
-		for i in range(number_aligned):
+		bar = progressbar.ProgressBar()
+		for i in bar(range(number_aligned)):
 			new_read, (chrom, pos) = extract_read(dna_type, ref_length[i])
 			new_read_name="{}_{}".format(chrom, pos)
 
@@ -384,25 +421,6 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 			if total > max_l:
 				continue
 
-			#####################################
-			# todo: fix default value of header #
-			#####################################
-			#
-			# Karel : I have added the line below to prevent the following error
-			#
-			#   ../src/simulator.py circular -r ecoli_K12_MG1655_ref.fa -c ecoli -n 1 # Note the -c option has to be the same as -o in read_analysis.py, or both use default parameter
-			#   Traceback (most recent call last):
-			#     File "../src/simulator.py", line 662, in <module>
-			#       main()
-			#     File "../src/simulator.py", line 656, in main
-			#       simulation(ref, out, dna_type, perfect, kmer_bias, max_readlength, min_readlength)
-			#     File "../src/simulator.py", line 337, in simulation
-			#       read_mutated = ''.join(np.random.choice(BASES, head)) + read_mutated
-			#   UnboundLocalError: local variable 'head' referenced before assignment
-			#   make: *** [all] Error 1
-			#
-			head=0
-
 			if remainder == 0:
 				head = 0
 				tail = 0
@@ -417,6 +435,14 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 								tail = remainder - head
 								break
 						break
+
+			# if remainder is larger than any empirical value, then randomly divide it into head and tail
+			try:
+				head
+			except NameError:
+				p = random.random()
+				head = int(round(remainder * p))
+				tail = remainder - head
 
 			# Extract middle region from reference genome
 			new_read, (chrom, pos) = extract_read(dna_type, middle_ref)
@@ -438,9 +464,9 @@ def simulation(ref, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, rnf
 				direction = "F"
 
 			# Add head and tail region
-			read_mutated = ''.join(np.random.choice(BASES, head)) + read_mutated
+			read_mutated = ''.join(numpy.random.choice(BASES, head)) + read_mutated
 
-			read_mutated = read_mutated + ''.join(np.random.choice(BASES, tail))
+			read_mutated = read_mutated + ''.join(numpy.random.choice(BASES, tail))
 
 			if kmer_bias:
 				read_mutated = collapse_homo(read_mutated, kmer_bias)
@@ -576,7 +602,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 	k1 = list(m_ht_list.keys())[0]
 	for k2, v2 in m_ht_list[k1].items():
 		if k2[0] < p <= k2[1]:
-			prev_match = int(np.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
+			prev_match = int(numpy.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
 			if prev_match < 2:
 				prev_match = 2
 	pos += prev_match
@@ -617,7 +643,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 		p = random.random()
 		for k2, v2 in m_model[k1].items():
 			if k2[0] < p <= k2[1]:
-				step = int(np.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
+				step = int(numpy.floor((p - k2[0])/(k2[1] - k2[0]) * (v2[1] - v2[0]) + v2[0]))
 				break
 		# there are no two 0 base matches together
 		if prev_match == 0 and step == 0:
@@ -632,6 +658,7 @@ def error_list(m_ref, m_model, m_ht_list, error_p, trans_p):
 		if prev_match == 0:
 			prev_error += "0"
 	return l_new, middle_ref, e_dict
+
 
 def cigar_from_errors(e_dict,length):
 	cigar = []
@@ -735,9 +762,9 @@ def case_convert(s_dict):
 
 def main():
 	ref = ""
-	model_dir = "training"
+	model_dir = DEFAULT_PROFILE
 	out = "simulated"
-	number = 20000
+	number = 10000
 	perfect = False
 	# ins, del, mis rate represent the weight tuning in mix model
 	ins_rate = 1.0
@@ -746,23 +773,45 @@ def main():
 	max_readlength = float("inf")
 	min_readlength = 50
 	kmer_bias = 6
-	seed = 1
+	seed = 42
+	unaligned_prop=None
+
+	description="""\
+			Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
+			Version:  {}
+			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
+			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
+	""".format(VERSION)
+
+	epilog="""\
+			Examples: nanosim-h --circular ecoli_ref.fasta
+			          nanosim-h --circular --perfect ecoli_ref.fasta
+			          nanosim-h -p yeast --kmer-bias 0 yeast_ref.fasta
+
+
+			Notice: the use of `max-len` and `min-len` will affect the read length distributions. If
+			the range between `max-len` and `min-len` is too small, the program will run slowlier accordingly.
+	"""
 
 	parser = argparse.ArgumentParser(
-			description='NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.',
-			epilog='Notice: the use of `max_len` and `min_len` will affect the read length distributions. If the range between `max_len` and `min_len` is too small, the program will run slowlier accordingly.',
+			formatter_class=argparse.RawDescriptionHelpFormatter,
+			description=textwrap.dedent(description),
+			epilog=textwrap.dedent(epilog),
 		)
 
-	parser.add_argument('ref',
-			type=str,
+	parser.add_argument('ref_fo',
+			type=argparse.FileType('r'),
 			metavar='<reference.fa>',
-			help='reference genome in fasta file',
+			help='reference genome (- for standard input)',
 		)
 	parser.add_argument('-p','--profile',
 			type=str,
 			metavar='str',
 			dest='model_dir',
-			help='directory with profile [{}]'.format(model_dir),
+			help='error profile - one of precomputed profiles ({}) or own directory with an error profile [{}]'.format(
+					", ".join(["'{}'".format(x) for x in DEFAULT_PROFILES]),
+					model_dir,
+				),
 			default=model_dir,
 		)
 	parser.add_argument('-o','--out-pref',
@@ -778,6 +827,13 @@ def main():
 			dest='number',
 			help='number of generated reads [{}]'.format(number),
 			default=number,
+		)
+	parser.add_argument('-u','--unalign-rate',
+			type=str,
+			metavar='float',
+			dest='unaligned_prop',
+			help='rate of unaligned reads [detect from the error profile]',
+			default=None,
 		)
 	parser.add_argument('-m','--mis-rate',
 			type=float,
@@ -797,7 +853,7 @@ def main():
 			type=float,
 			metavar='float',
 			dest='del_rate',
-			help='deletion reate (weight tuning) [{}]'.format(del_rate),
+			help='deletion rate (weight tuning) [{}]'.format(del_rate),
 			default=del_rate,
 		)
 	parser.add_argument('-s','--seed',
@@ -856,10 +912,11 @@ def main():
 
 	args = parser.parse_args()
 
-	ref = args.ref
+	ref_fo = args.ref_fo
 	model_dir = args.model_dir
 	out = args.out
 	number = args.number
+	unaligned_prop = args.unaligned_prop
 	perfect = args.perfect
 	ins_rate = args.ins_rate
 	del_rate = args.del_rate
@@ -880,28 +937,39 @@ def main():
 
 	if seed==0:
 		random.seed()
-		np.random.seed()
+		numpy.random.seed()
 	else:
 		random.seed(seed)
-		np.random.seed(seed)
+		numpy.random.seed(seed)
 
 	assert ins_rate >= 0
 	assert del_rate >= 0
 	assert mis_rate >= 0
 	assert min_readlength >= 0
 	assert min_readlength <= max_readlength, "Maximum read length must be longer than minimum read length."
-	assert os.path.isfile(ref), "File '{}' does not exist.".format(ref)
+	#assert os.path.isfile(ref), "File '{}' does not exist.".format(ref)
+	assert unaligned_prop is None or (float(unaligned_prop) >= 0 and float(unaligned_prop) <= 1)
 
 	# Generate log file
 	sys.stdout = open(out + ".log", 'w')
 	# Record the command typed to log file
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ': ' + ' '.join(sys.argv) + '\n')
 
+	if is_model_dir(model_dir):
+			print("Using a user-defined profile: {}".format(model_dir), file=sys.stderr)
+	else:
+		alt=os.path.join(DEFAULT_PROFILES_DIR, model_dir)
+		if is_model_dir(alt):
+			print("Using profile {} from default profiles".format(model_dir), file=sys.stderr)
+			model_dir=alt
+		else:
+			sys.exit("Profile not found: {}".format(model_dir))
+
 	# Read in reference genome and generate simulated reads
-	read_profile(number, model_dir, perfect, max_readlength, min_readlength)
+	read_profile(number, model_dir, perfect, max_readlength, min_readlength, unaligned_prop)
 
 	simulation(
-			ref=ref,
+			ref_fo=ref_fo,
 			out=out,
 			dna_type=dna_type,
 			per=perfect,
@@ -915,6 +983,7 @@ def main():
 
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Finished!")
 	sys.stdout.close()
+
 
 if __name__ == "__main__":
 	main()

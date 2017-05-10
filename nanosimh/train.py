@@ -1,47 +1,70 @@
 #!/usr/bin/env python
 
 """
-Created on Apr 10, 2015
+@copyright 2016 Chen Yang
+@copyright 2017 Karel Brinda
 
-@author: Chen Yang
+Created by Chen Yang <cheny@bcgsc.ca> (NanoSim)
+Forked and modified by Karel Brinda <kbrinda@hsph.harvard.edu> (NanoSim-H)
+
+License: GPLv3
 
 This script generates read profiles Oxford Nanopore 2D reads.
-
 """
 
 from __future__ import print_function
 from __future__ import with_statement
-from subprocess import call
 from time import strftime
+import subprocess
 import sys
 import os
 import argparse
 import numpy
+import textwrap
 from .head_align_tail_dist import *
 from .get_besthit import *
 from .besthit_to_histogram import * 
 import multiprocessing
 from .misc import *
 
+from .version import VERSION
+
 nb_cores=multiprocessing.cpu_count()
 
 def run(command):
 	print("Running '{}'".format(command),file=sys.stderr)
-	call(command, shell=True)
+	assert subprocess.call(command, shell=True)==0, "Non-zero exit status"
 
 def main():
 	# Parse input and output files
 	infile = ''
-	outfile = 'training'
-	ref = ''
 	maf_file = ''
 	model_fit = True
 	num_bins = 20
 
+	description="""\
+			Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
+			Version:  {}
+			Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
+			          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
+	""".format(VERSION)
+
+
 	parser = argparse.ArgumentParser(
-			description='NanoSimH - a fork of NanoSim, a simulator of Oxford Nanopore reads.',
+			formatter_class=argparse.RawDescriptionHelpFormatter,
+			description=textwrap.dedent(description),
 		)
 
+	parser.add_argument('ref',
+			type=str,
+			metavar='<reference.fa>',
+			help='reference genome of the training reads',
+		)
+	parser.add_argument('model_dir',
+			type=str,
+			metavar='<profile.dir>',
+			help='error profile dir',
+		)
 	parser.add_argument('-i', '--infile',
 			type=str,
 			metavar='str',
@@ -49,26 +72,12 @@ def main():
 			help='training ONT real reads, must be fasta files',
 			default='',
 		)
-	parser.add_argument('-r', '--ref',
-			type=str,
-			metavar='str',
-			required=True,
-			dest='ref',
-			help='reference genome of the training reads',
-		)
 	parser.add_argument('-m', '--maf',
 			type=str,
 			metavar='str',
 			dest='maf_file',
 			help='user can provide their own alignment file, with maf extension',
 			default='',
-		)
-	parser.add_argument('-p','--profile',
-			type=str,
-			metavar='str',
-			dest='outfile',
-			help='prefix of output files [{}]'.format(outfile),
-			default=outfile,
 		)
 	parser.add_argument('-b','--num-bins',
 			type=int,
@@ -86,7 +95,7 @@ def main():
 	args = parser.parse_args()
 
 	infile = args.infile
-	outfile = args.outfile
+	model_dir = args.model_dir
 	ref = args.ref
 	maf_file = args.maf_file
 	model_fit = args.model_fit
@@ -94,21 +103,20 @@ def main():
 
 	assert num_bins>0
 
-	assert infile!='' or ref!=''
+	assert_file_exists(ref, True)
 	if infile!='':
 		assert_file_exists(infile, True)
-	if ref!='':
-		assert_file_exists(ref, True)
 
+	os.makedirs(model_dir , exist_ok=True)
 
 	# READ PRE-PROCESS AND UNALIGNED READS ANALYSIS
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Read pre-process and unaligned reads analysis\n")
-	out_maf = outfile + ".maf"
+	out_maf = os.path.join(model_dir,"training.maf")
 
 	# Read pre-process
-	in_fasta = outfile + ".fasta"
+	in_fasta = os.path.join(model_dir,"training.fasta")
 	if in_fasta == infile:
-		in_fasta = outfile + "_processed.fasta"
+		in_fasta = os.path.join(model_dir,"processed.fasta")
 	out_fasta = open(in_fasta, 'w')
 	dic_reads = {}
 	with open(infile, 'r') as f:
@@ -128,29 +136,34 @@ def main():
 	if maf_file != '':
 		assert_file_exists(maf_file, True)
 		if out_maf == maf_file:
-			out_maf = outfile + "_processed.maf"
+			out_maf = os.path.join(model_dir,"processed.maf")
 
 		call("grep '^s ' \"{}\" > \"{}\"".format(maf_file, out_maf), shell=True)
 
 		# get best hit and unaligned reads
-		unaligned_length = list(besthit_and_unaligned(in_fasta, out_maf, outfile))
+		unaligned_length = list(besthit_and_unaligned(in_fasta, out_maf, model_dir))
 
 	# if maf file not provided
 	else:
 		# Alignment
 		sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Alignment with LAST\n")
+
+		#
+		# TODO (Karel): some versions of LAST dont support -P so I remove it for now
+		#
 		run('lastdb -P {} ref_genome "{}"'.format(nb_cores, ref))
-		run('lastal -T0 -r1 -q1 -a1 -b1 -m100 -P {} ref_genome "{}" | grep \'^s \' > "{}"'.format(nb_cores, in_fasta, out_maf))
+		run('lastal -T0 -r1 -q1 -a1 -b1 -m100 ref_genome "{}" | grep \'^s \' > "{}"'.format(in_fasta, out_maf))
+		#run('lastal -T0 -r1 -q1 -a1 -b1 -m100 -P {} ref_genome "{}" | grep \'^s \' > "{}"'.format(nb_cores, in_fasta, out_maf))
 
 		# get best hit and unaligned reads
-		unaligned_length = list(besthit_and_unaligned(in_fasta, out_maf, outfile))
+		unaligned_length = list(besthit_and_unaligned(in_fasta, out_maf, model_dir))
 
 	# ALIGNED READS ANALYSIS
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Aligned reads analysis\n")
-	num_aligned = head_align_tail(outfile, num_bins)
+	num_aligned = head_align_tail(model_dir, num_bins)
 
 	# Length distribution of unaligned reads
-	out1 = open(outfile + "_unaligned_length_ecdf", 'w')
+	out1 = open(os.path.join(model_dir, "unaligned_length_ecdf"), 'w')
 
 	num_unaligned = len(unaligned_length)
 	if num_unaligned != 0:
@@ -170,13 +183,13 @@ def main():
 
 	# MATCH AND ERROR MODELS
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": match and error models\n")
-	hist(outfile)
+	hist(model_dir)
 
 	if model_fit:
 		sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Model fitting\n")
 		r_path = os.path.join(os.path.dirname(__file__), "model_fitting.R")
 		if os.path.isfile(r_path):
-			run("R CMD BATCH '--args prefix=\"{}\"' \"{}\"".format(outfile,r_path))
+			run("R CMD BATCH '--args prefix=\"{}\"' \"{}\"".format(model_dir,r_path))
 		else:
 			sys.stderr.write("Could not find 'model_fitting.R' in ../src/\n" +
 				  "Make sure you copied the whole source files from Github.")
