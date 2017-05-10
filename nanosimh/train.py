@@ -11,7 +11,6 @@ This script generates read profiles Oxford Nanopore 2D reads.
 
 from __future__ import print_function
 from __future__ import with_statement
-from subprocess import call
 from time import strftime
 import sys
 import os
@@ -27,7 +26,7 @@ nb_cores=multiprocessing.cpu_count()
 
 def run(command):
 	print("Running '{}'".format(command),file=sys.stderr)
-	call(command, shell=True)
+	assert subprocess.call(command, shell=True)==0, "Non-zero exit status"
 
 def main():
 	# Parse input and output files
