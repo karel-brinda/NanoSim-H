@@ -111,8 +111,8 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 .. code-block::
 
 	$ nanosim-h --help
-	usage: nanosim-h [-h] [-p str] [-o str] [-n int] [-m float] [-i float]
-	                 [-d float] [-s int] [--circular] [--perfect]
+	usage: nanosim-h [-h] [-p str] [-o str] [-n int] [-u float] [-m float]
+	                 [-i float] [-d float] [-s int] [--circular] [--perfect]
 	                 [--merge-contigs] [--rnf] [--rnf-add-cigar] [--max-len int]
 	                 [--min-len int] [--kmer-bias int]
 	                 <reference.fa>
@@ -134,7 +134,10 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	                        directory with an error profile [ecoli_R9_2D]
 	  -o str, --out-pref str
 	                        prefix of output file [simulated]
-	  -n int, --number int  number of generated reads [20000]
+	  -n int, --number int  number of generated reads [10000]
+	  -u float, --unalign-rate float
+	                        rate of unaligned reads [detect from the error
+	                        profile]
 	  -m float, --mis-rate float
 	                        mismatch rate (weight tuning) [1.0]
 	  -i float, --ins-rate float
