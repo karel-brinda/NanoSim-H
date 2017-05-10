@@ -18,7 +18,7 @@ NanoSim-H is a simulator of Oxford Nanopore reads that captures the technology-s
 and allows for adjustments upon improvement of Nanopore sequencing technology.
 NanoSim-H was created as a fork of `NanoSim <https://github.com/bcgsc/NanoSim>`_ 1.0.1,
 a software package developed by Chen Yang at `Canada's Michael Smith Genome Sciences Centre <http://www.bcgsc.ca/>`_.
-NanoSim-H 
+NanoSim-H
 
 NanoSim-H is implemented using Python uses R for model fitting.
 In silico reads can be simulated from a given reference genome using ``nanosim-h``.
@@ -41,9 +41,9 @@ Versions of NanoSim-H are kept synchronized with the version of NanoSim.
 
 Quick example
 -------------
-	
+
 .. code-block:: bash
-	
+
 	pip install --upgrade nanosim-h
 	curl "https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?db=nuccore&dopt=fasta&val=545778205&sendto=on" | \
 		nanosim-h -n 100 -
@@ -268,4 +268,4 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 10. ``match_markov_model`` – Markov model of the length of matches (stretches of correct base calls).
 11. ``model_profile`` – Fitted model for errors.
 12. ``processed.maf`` – A re-formatted MAF file for user-provided alignment file.
-13. ``unaligned_length_ecdf`` – Length distribution of unaligned read
+13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads

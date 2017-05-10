@@ -22,8 +22,7 @@ def main():
 
 	with open('README.rst', 'r') as readme:
 		for x in readme:
-			if len(x)>0:
-				x=x[:-1]
+			x = x.rstrip()
 			if command_mode==False:
 				out.append(x)
 				if x.find(".. command: ")==0:
