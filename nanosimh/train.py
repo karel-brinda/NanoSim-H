@@ -12,6 +12,7 @@ This script generates read profiles Oxford Nanopore 2D reads.
 from __future__ import print_function
 from __future__ import with_statement
 from time import strftime
+import subprocess
 import sys
 import os
 import argparse
