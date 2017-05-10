@@ -360,7 +360,8 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 		ref_length = get_length(aligned_dict, number_aligned, max_l, min_l)
 		del aligned_dict
 
-		for i in range(number_aligned):
+		bar = progressbar.ProgressBar()
+		for i in bar(range(number_aligned)):
 			new_read, (chrom, pos) = extract_read(dna_type, ref_length[i])
 			new_read_name="{}_{}".format(chrom, pos)
 
@@ -831,7 +832,7 @@ def main():
 			type=str,
 			metavar='float',
 			dest='unaligned_prop',
-			help='rate of unaligned reads [detect from error profile]',
+			help='rate of unaligned reads [detect from the error profile]',
 			default=None,
 		)
 	parser.add_argument('-m','--mis-rate',
@@ -947,6 +948,7 @@ def main():
 	assert min_readlength >= 0
 	assert min_readlength <= max_readlength, "Maximum read length must be longer than minimum read length."
 	#assert os.path.isfile(ref), "File '{}' does not exist.".format(ref)
+	assert unaligned_prop is None or (float(unaligned_prop) >= 0 and float(unaligned_prop) <= 1)
 
 	# Generate log file
 	sys.stdout = open(out + ".log", 'w')
