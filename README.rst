@@ -118,7 +118,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	                 <reference.fa>
 	
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-	Version:  1.1.0.2
+	Version:  1.1.0.3
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
@@ -128,10 +128,10 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -p str, --profile str
-	                        error profile - one of precomputed profiles
-	                        ('ecoli_R7', 'ecoli_R7.3', 'ecoli_R9_1D',
-	                        'ecoli_R9_2D', 'ecoli_UCSC1b', 'yeast') or own
-	                        directory with an error profile [ecoli_R9_2D]
+	                        error profile - one of precomputed profiles ('yeast',
+	                        'ecoli_R9_2D', 'ecoli_R7', 'ecoli_UCSC1b',
+	                        'ecoli_R9_1D', 'ecoli_R7.3') or own directory with an
+	                        error profile [ecoli_R9_2D]
 	  -o str, --out-pref str
 	                        prefix of output file [simulated]
 	  -n int, --number int  number of generated reads [10000]
@@ -186,7 +186,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
 1. ``simulated.log`` – Log file for simulation process.
 
-2. ``simulated_reads.fasta`` – FASTA file of simulated reads. Reads can contain information about how they were created either in RNF, or in the original NanoSim naming convention.
+2. ``simulated.fa`` – FASTA file of simulated reads. Reads can contain information about how they were created either in RNF, or in the original NanoSim naming convention.
 
         **RNF naming convention**
 
@@ -205,7 +205,7 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 
 	The information in the header can help users to locate the read easily.
 
-3. ``simulated_errors`` – List of introduced errors.
+3. ``simulated.errors.txt`` – List of introduced errors.
 
 	The output contains error type, position, original bases and current bases.
 
@@ -238,7 +238,7 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 	                       <reference.fa> <profile.dir>
 	
 	Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
-	Version:  1.1.0.2
+	Version:  1.1.0.3
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	

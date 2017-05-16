@@ -71,7 +71,7 @@ def is_model_dir(model_dir):
 
 def fasta_write_sequence(fasta_file, seqname, seq):
 	fasta_file.write(">" + seqname + '\n')
-	
+
 	for fasta_line in [seq[i:i+FASTA_LINE_WIDTH] for i in range(0, len(seq), FASTA_LINE_WIDTH)]:
 		fasta_file.write(fasta_line + "\n")
 
@@ -236,7 +236,7 @@ def read_profile(number, model_dir, per, max_l, min_l, unaligned_prop):
 	assert_file_exists(length_profile, True)
 	with open(length_profile, 'r') as align_profile:
 		aligned_dict = read_ecdf(align_profile)
-		
+
 
 def collapse_homo(seq, k):
 	read = re.sub("A" * k + "+", "A" * (k - 1), seq)
@@ -305,8 +305,8 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 
 	# Start simulation
 	sys.stdout.write(strftime("%Y-%m-%d %H:%M:%S") + ": Start simulation of random reads\n")
-	out_reads = open(out + "_reads.fasta", 'w')
-	out_error = open(out + "_error_profile", 'w')
+	out_reads = open(out + ".fa", 'w')
+	out_error = open(out + ".errors.txt", 'w')
 	out_error.write("Seq_name\tSeq_pos\terror_type\terror_length\tref_base\tseq_base\n")
 
 	# Simulate unaligned reads
@@ -322,7 +322,7 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 
 		new_read_name = new_read_name + "_unaligned_" + str(i)
 		read_mutated, cigar = mutate_read(new_read, new_read_name, out_error, error_dict, kmer_bias, False)
-		
+
 		# Reverse complement half of the reads
 		p = random.random()
 		if p < 0.5:
@@ -366,7 +366,7 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 			new_read_name="{}_{}".format(chrom, pos)
 
 			new_read_name = new_read_name + "_perfect_" + str(i)
-			
+
 			# Reverse complement half of the reads
 			p = random.random()
 			if p < 0.5:
@@ -486,7 +486,7 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 						id_len=rnf_id_len,
 					)
 			else:
-				seqname=new_read_name + "_" + str(head) + "_" + str(middle_ref) + "_" + str(tail) 
+				seqname=new_read_name + "_" + str(head) + "_" + str(middle_ref) + "_" + str(tail)
 
 			fasta_write_sequence(out_reads, seqname, read_mutated)
 
