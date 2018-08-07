@@ -22,7 +22,7 @@ help: ## Print help message
 
 clean: ## Clean
 	$(PYTHON) setup.py clean --all
-	$(MAKE) -C tests clean
+	$(MAKE) -C test clean
 
 install: ## Install nanosim-h using PIP
 install:
@@ -36,10 +36,10 @@ install:
 
 test: test_repo
 
-test_repo: ## Run unit tests & integration from the repo dir
+test_repo: ## Run unit test & integration from the repo dir
 test_repo:
-	$(MAKE) -C tests clean
-	$(MAKE) -C tests
+	$(MAKE) -C test clean
+	$(MAKE) -C test
 
 pylint: ## Run PyLint
 	$(PYTHON) -m pylint nanosimh
@@ -48,7 +48,7 @@ flake8: ## Run Flake8
 	flake8
 
 yapf: ## Run YAPF (inline replacement)
-	yapf -i --recursive nanosimh setup.py tests
+	yapf -i --recursive nanosimh setup.py test
 
 
 #############
