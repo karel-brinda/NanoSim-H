@@ -14,8 +14,10 @@ from .mixed_models import *
 
 import sys
 
+
 def nanosimh_simulate():
-	simulate.main()
+    simulate.main()
+
 
 def nanosimh_train():
-	train.main()
+    train.main()
