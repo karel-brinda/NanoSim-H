@@ -281,3 +281,13 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 11. ``model_profile`` – Fitted model for errors.
 12. ``processed.maf`` – A re-formatted MAF file for user-provided alignment file.
 13. ``unaligned_length_ecdf`` – Length distribution of unaligned reads
+
+
+Cite
+----
+
+If you use NanoSim-H in your work, please cite both the NanoSim paper and the NanoSim-H Zenodo archive.
+
+[1] Chen Yang, Justin Chu, René L Warren, Inanç Birol; NanoSim: nanopore sequence read simulator based on statistical characterization. Gigascience 2017 gix010. http://doi.org/10.1093/gigascience/gix010
+
+[2] Karel Břinda, Chen Yang. NanoSim-H (Version 1.1.0.4). Zenodo. http://doi.org/10.5281/zenodo.1341249
