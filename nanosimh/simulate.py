@@ -375,21 +375,21 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
 			else:
 				direction="F"
 
-		if rnf:
-			seqname=rnf_name(
-					read_id=i+1,
-					chrom_id=chrom_id[chrom],
-					left=pos+1,
-					right=pos+ref_length[i],
-					direction=direction,
-					suffix_dict={"LEN":ref_length},
-					coord_len=rnf_coord_len,
-					id_len=rnf_id_len,
-				)
-		else:
-			seqname="{}_{}_0_{}_0".format(direction, new_read_name, ref_length[i])
+			if rnf:
+				seqname=rnf_name(
+						read_id=i+1,
+						chrom_id=chrom_id[chrom],
+						left=pos+1,
+						right=pos+ref_length[i],
+						direction=direction,
+						suffix_dict={"LEN":ref_length},
+						coord_len=rnf_coord_len,
+						id_len=rnf_id_len,
+					)
+			else:
+				seqname="{}_{}_0_{}_0".format(direction, new_read_name, ref_length[i])
 
-		fasta_write_sequence(out_reads, seqname, new_read)
+			fasta_write_sequence(out_reads, seqname, new_read)
 
 		out_reads.close()
 		out_error.close()
