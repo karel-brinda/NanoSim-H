@@ -24,4 +24,4 @@ ecoli_K12_MG1655_ref.fa:
 	wget ftp://ftp.bcgsc.ca/supplementary/NanoSim/$@
 
 clean:
-	rm -f *.fa *.maf model_* ref_genome.* *.log *.fasta simulated_error_profile
+	rm -f *.fa *.maf model_* ref_genome.* *.log *.fasta simulated_error_profile *.txt
