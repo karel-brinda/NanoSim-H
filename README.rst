@@ -59,7 +59,10 @@ Installation
 
 .. code-block:: bash
 
-	conda install -y -c bioconda nanosim-h
+	conda config --add channels defaults
+	conda config --add channels conda-forge
+	conda config --add channels bioconda
+	conda install -y nanosim-h
 
 **From** `PyPI <https://pypi.python.org/pypi/NanoSim-H/>`_ **:**
 
@@ -71,17 +74,17 @@ Installation
 
 .. code-block:: bash
 
-		git clone https://github.com/karel-brinda/nanosim-h
-		cd nanosim-h
-		pip install --upgrade .
+	git clone https://github.com/karel-brinda/nanosim-h
+	cd nanosim-h
+	pip install --upgrade .
 
 or
 
 .. code-block:: bash
 
-		git clone https://github.com/karel-brinda/nanosim-h
-		cd nanosim-h
-		python setup.py install
+	git clone https://github.com/karel-brinda/nanosim-h
+	cd nanosim-h
+	python setup.py install
 
 
 **Dependencies:**
@@ -111,14 +114,14 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 .. code-block::
 
 	$ nanosim-h --help
-	usage: nanosim-h [-h] [-p str] [-o str] [-n int] [-u float] [-m float]
+	usage: nanosim-h [-h] [-v] [-p str] [-o str] [-n int] [-u float] [-m float]
 	                 [-i float] [-d float] [-s int] [--circular] [--perfect]
 	                 [--merge-contigs] [--rnf] [--rnf-add-cigar] [--max-len int]
 	                 [--min-len int] [--kmer-bias int]
 	                 <reference.fa>
 	
 	Program:  NanoSim-H - a simulator of Oxford Nanopore reads.
-	Version:  1.1.0.3
+	Version:  1.1.0.4
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
@@ -127,11 +130,12 @@ Simulation stage takes a reference genome and possibly a read profile as input, 
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
 	  -p str, --profile str
-	                        error profile - one of precomputed profiles ('yeast',
-	                        'ecoli_R9_2D', 'ecoli_R7', 'ecoli_UCSC1b',
-	                        'ecoli_R9_1D', 'ecoli_R7.3') or own directory with an
-	                        error profile [ecoli_R9_2D]
+	                        error profile - one of precomputed profiles
+	                        ('ecoli_R7.3', 'ecoli_R7', 'ecoli_R9_1D',
+	                        'ecoli_R9_2D', 'yeast', 'ecoli_UCSC1b') or own
+	                        directory with an error profile [ecoli_R9_2D]
 	  -o str, --out-pref str
 	                        prefix of output file [simulated]
 	  -n int, --number int  number of generated reads [10000]
@@ -234,11 +238,11 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 .. code-block::
 
 	$ nanosim-h-train --help
-	usage: nanosim-h-train [-h] [-i str] [-m str] [-b int] [--no-model-fit]
+	usage: nanosim-h-train [-h] [-v] [-i str] [-m str] [-b int] [--no-model-fit]
 	                       <reference.fa> <profile.dir>
 	
 	Program:  NanoSim-H-Train - compute an error profile for NanoSim-H.
-	Version:  1.1.0.3
+	Version:  1.1.0.4
 	Authors:  Chen Yang <cheny@bcgsc.ca> - author of the original software package (NanoSim)
 	          Karel Brinda <kbrinda@hsph.harvard.edu> - author of the NanoSim-H fork
 	
@@ -248,6 +252,7 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
 	  -i str, --infile str  training ONT real reads, must be fasta files
 	  -m str, --maf str     user can provide their own alignment file, with maf
 	                        extension

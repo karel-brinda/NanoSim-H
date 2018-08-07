@@ -1,5 +1,5 @@
-.PHONY: \
-	all nanosim-h clean install hooks \
+sPHONY: \
+	all nanosim-h clean install \
 	test \
 	pylint flake8 yapf \
 	inc pypi sha256 \
@@ -25,7 +25,7 @@ clean: ## Clean
 	$(MAKE) -C tests clean
 
 install: ## Install nanosim-h using PIP
-install: hooks
+install:
 	$(PIP) uninstall -y nanosim-h || true
 	$(PIP) install .
 
@@ -56,11 +56,11 @@ yapf: ## Run YAPF (inline replacement)
 #############
 
 inc: ## Increment version
-inc: hooks
+inc:
 	./nanosimh/increment_version.py
 
 pypi: ## Upload nanosim-h to PyPI
-pypi: hooks
+pypi:
 	$(MAKE) clean
 	$(PYTHON) setup.py sdist bdist_wheel upload
 
@@ -75,7 +75,8 @@ sha256:
 
 
 readme: ## Convert README to HTML
-readme: hooks
+readme:
+	./update_readme_cli.py
 	rst2html.py README.rst > README.html
 
 wconda: ## Open nanosim-h Bioconda webpage
