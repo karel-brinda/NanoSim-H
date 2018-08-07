@@ -10,6 +10,9 @@ NanoSim-H
 .. image:: https://badge.fury.io/py/NanoSim-H.svg
 	:target: https://badge.fury.io/py/NanoSim-H
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1341249.svg
+        :target: https://doi.org/10.5281/zenodo.1341249
+
 
 About
 -----
@@ -34,7 +37,7 @@ The main improvements compared to NanoSim are:
 * Automatic testing using `Travis <https://travis-ci.org/karel-brinda/NanoSim-H>`_
 * Reproducible simulations (setting a seed for PRG)
 * Improved interface with new parameters (e.g., for merging all contigs) and a progress bar
-* Several minor bugs fixed
+* Various bugs fixed
 
 
 
