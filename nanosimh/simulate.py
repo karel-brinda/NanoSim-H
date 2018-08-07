@@ -19,7 +19,6 @@ import sys
 import random
 import os
 import re
-import argparse
 import progressbar
 import numpy
 import glob
@@ -818,6 +817,9 @@ def main():
         metavar='<reference.fa>',
         help='reference genome (- for standard input)',
     )
+
+    parser.add_argument('-v', '--version', action='version', version='NanoSim-H {}'.format(VERSION))
+
     parser.add_argument(
         '-p',
         '--profile',

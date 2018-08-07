@@ -67,6 +67,9 @@ def main():
         metavar='<profile.dir>',
         help='error profile dir',
     )
+
+    parser.add_argument('-v', '--version', action='version', version='NanoSim-H {}'.format(VERSION))
+
     parser.add_argument(
         '-i',
         '--infile',
