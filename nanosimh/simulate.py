@@ -32,7 +32,7 @@ from .version import VERSION
 
 BASES = ['A', 'T', 'C', 'G']
 
-FASTA_LINE_WIDTH = 60
+FASTA_LINE_WIDTH = 10**7
 
 # package directory
 PD = os.path.dirname(os.path.realpath(__file__))
@@ -383,7 +383,7 @@ def simulation(ref_fo, out, dna_type, per, kmer_bias, max_l, min_l, merge, rnf, 
                     left=pos + 1,
                     right=pos + ref_length[i],
                     direction=direction,
-                    suffix_dict={"LEN": ref_length},
+                    suffix_dict={"LEN": ref_length[i]},
                     coord_len=rnf_coord_len,
                     id_len=rnf_id_len,
                 )
