@@ -286,7 +286,7 @@ A new error profile can be obtained using the ``nanosim-h-train`` command.
 Cite
 ----
 
-If you use NanoSim-H in your work, please cite both the NanoSim paper and the NanoSim-H Zenodo archive.
+If you use NanoSim-H in your work, please cite both the original `NanoSim paper <http://doi.org/10.1093/gigascience/gix010>`_ and the `NanoSim-H Zenodo lineage <http://doi.org/10.5281/zenodo.1341249>`_.
 
 [1] Chen Yang, Justin Chu, René L Warren, Inanç Birol; NanoSim: nanopore sequence read simulator based on statistical characterization. Gigascience 2017 gix010. http://doi.org/10.1093/gigascience/gix010
 
