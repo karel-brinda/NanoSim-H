@@ -109,7 +109,7 @@ When installed using PIP, all dependencies for read simulation are installed aut
 Read simulation
 ---------------
 
-Simulation stage takes a reference genome and possibly a read profile as input, and outputs simulated reads in FASTA format.
+Simulation stage takes a reference genome and possibly a read profile as input, and outputs simulated reads in FASTA format. At this point, NanoSim-H supports uncompressed files only (no gzip).
 
 
 .. command: nanosim-h --help
