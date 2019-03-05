@@ -21,7 +21,7 @@ ecoli_R7_2D.fasta:
 	curl ftp://ftp.bcgsc.ca/supplementary/NanoSim/$@ | head -n 200 > $@
 
 ecoli_K12_MG1655_ref.fa:
-	wget ftp://ftp.bcgsc.ca/supplementary/NanoSim/$@
+	curl -L "http://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi?tool=portal&sendto=on&log$=seqview&db=nuccore&dopt=fasta&val=NC_000913.2" > $@
 
 clean:
 	rm -f *.fa *.maf model_* ref_genome.* *.log *.fasta simulated_error_profile *.txt
