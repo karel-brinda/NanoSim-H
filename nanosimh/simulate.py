@@ -536,7 +536,7 @@ def extract_read(dna_type, length):
             # todo: check if this code is correct, Python dict might not have a well defined order of keys
             #
             for key in seq_len.keys():
-                if ref_pos + length < seq_len[key]:
+                if ref_pos + length <= seq_len[key]:
                     new_read = seq_dict[key][ref_pos:ref_pos + length]
                     read_info = (key, ref_pos)
                     break
