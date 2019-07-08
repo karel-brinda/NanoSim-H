@@ -764,10 +764,10 @@ def case_convert(s_dict):
 
     for k, v in s_dict.items():
         up_string = v.upper()
-        for i in range(len(up_string)):
-            if up_string[i] in base_code:
-                up_string = up_string[:i] + random.choice(base_code[up_string[i]]) + up_string[i + 1:]
-        out_dict[k] = up_string
+        out_dict[k] = ''.join(
+            (random.choice(base_code[c]) if c in base_code else c)
+            for c in up_string
+        )
 
     return out_dict
 
