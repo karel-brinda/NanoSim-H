@@ -536,7 +536,7 @@ def extract_read(dna_type, length):
             # todo: check if this code is correct, Python dict might not have a well defined order of keys
             #
             for key in seq_len.keys():
-                if ref_pos + length < seq_len[key]:
+                if ref_pos + length <= seq_len[key]:
                     new_read = seq_dict[key][ref_pos:ref_pos + length]
                     read_info = (key, ref_pos)
                     break
@@ -695,6 +695,14 @@ def mutate_read(read, read_name, error_log, e_dict, k, aligned=True):
     for key in sorted(e_dict.keys(), reverse=True):
         val = e_dict[key]
         key = int(round(key))
+
+        if key + val[1] >= len(read):
+            # Skip mutations that are meant to be applied to a location beyond
+            # the end of the read. These can exist in the case where
+            # extract_reads reduced the length it was given to
+            # max(seq_len.values()) and thereby invalidated some of the
+            # already-generated entries in e_dict.
+            continue
 
         if val[0] == "mis":
             ref_base = read[key:key + val[1]]
