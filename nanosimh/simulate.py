@@ -536,7 +536,7 @@ def extract_read(dna_type, length):
             # todo: check if this code is correct, Python dict might not have a well defined order of keys
             #
             for key in seq_len.keys():
-                if ref_pos + length < seq_len[key]:
+                if ref_pos + length <= seq_len[key]:
                     new_read = seq_dict[key][ref_pos:ref_pos + length]
                     read_info = (key, ref_pos)
                     break
@@ -696,6 +696,14 @@ def mutate_read(read, read_name, error_log, e_dict, k, aligned=True):
         val = e_dict[key]
         key = int(round(key))
 
+        if key + val[1] >= len(read):
+            # Skip mutations that are meant to be applied to a location beyond
+            # the end of the read. These can exist in the case where
+            # extract_reads reduced the length it was given to
+            # max(seq_len.values()) and thereby invalidated some of the
+            # already-generated entries in e_dict.
+            continue
+
         if val[0] == "mis":
             ref_base = read[key:key + val[1]]
             while True:
@@ -764,10 +772,10 @@ def case_convert(s_dict):
 
     for k, v in s_dict.items():
         up_string = v.upper()
-        for i in range(len(up_string)):
-            if up_string[i] in base_code:
-                up_string = up_string[:i] + random.choice(base_code[up_string[i]]) + up_string[i + 1:]
-        out_dict[k] = up_string
+        out_dict[k] = ''.join(
+            (random.choice(base_code[c]) if c in base_code else c)
+            for c in up_string
+        )
 
     return out_dict
 
